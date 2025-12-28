@@ -1,4 +1,4 @@
-import { configure, action, observable, flow, decorate, runInAction } from 'mobx'
+import { configure, action, observable, makeObservable, runInAction } from 'mobx'
 import { extend } from 'lodash'
 import Notify from '../services/Notify'
 import Api from '../services/Api'
@@ -14,6 +14,23 @@ class ClientSettingStore {
   org = {}
   user = {}
   help = {}
+
+  constructor() {
+    makeObservable(this, {
+      org: observable,
+      user: observable,
+      help: observable,
+      IsLoading: observable,
+      Reset: action,
+      Load: action,
+      SetLoading: action,
+      SetHelp: action,
+      ResetHelpDefault: action,
+      ResetTheme: action,
+      SetOrgSetting: action,
+      SetUserSetting: action
+    })
+  }
 
   Reset() {
     this.UserID = null
@@ -44,11 +61,11 @@ class ClientSettingStore {
   }
 
   SetHelp(key, data) {
-    let help = this.help[key]
+    const help = this.help[key]
     let op = null
     this.SetLoading(true)
     if (help.OrganisationID == null) {
-      let newHelp = extend({}, help, data)
+      const newHelp = extend({}, help, data)
       delete newHelp.HelpID
       op = Api.Helps.create(newHelp)
     } else {
@@ -61,8 +78,9 @@ class ClientSettingStore {
       this.SetLoading(false)
     }).catch(() => this.SetLoading(false))
   }
+
   ResetHelpDefault(key) {
-    let help = this.help[key]
+    const help = this.help[key]
     if (help.OrganisationID != null) {
       this.SetLoading(true)
       Api.Helps.delete(help.HelpID)
@@ -98,14 +116,14 @@ class ClientSettingStore {
   }
 
   _setServerSetting(set, key, value) {
-    let idName = `${set}SettingID`
-    let setName = `${set}Settings`
-    let data = set === "User" ? { Key: key, UserID: this.UserID } : { Key: key, OrganisationID: this.OrganisationID }
+    const idName = `${set}SettingID`
+    const setName = `${set}Settings`
+    const data = set === "User" ? { Key: key, UserID: this.UserID } : { Key: key, OrganisationID: this.OrganisationID }
 
     // update server preference
     Api[setName].query({}, data)
       .then((response) => {
-        let notifyUpdated = () => (Notify.success("Preference updated."))
+        const notifyUpdated = () => (Notify.success("Preference updated."))
         if (response.length > 0) {
           // existing pref
           Api[setName].update({
@@ -137,12 +155,5 @@ class ClientSettingStore {
   }
 
 }
-
-decorate(ClientSettingStore, {
-  org: observable,
-  user: observable,
-  help: observable,
-  IsLoading: observable
-})
 
 export default ClientSettingStore

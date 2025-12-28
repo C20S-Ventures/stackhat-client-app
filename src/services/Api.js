@@ -6,6 +6,10 @@ import Notify from './Notify'
 import FileDownload from 'js-file-download'
 import Version from './Version'
 
+// Configure axios defaults for security
+Axios.defaults.timeout = 30000 // 30 second timeout
+Axios.defaults.withCredentials = true // Send cookies with requests
+
 // handle 401 unauth
 Axios.interceptors.response.use(response => {
   return response;
@@ -18,7 +22,7 @@ Axios.interceptors.response.use(response => {
   if (error.response && error.response.status === 400) {
     return Promise.reject(error)
   }
-  return error;
+  return Promise.reject(error);
 })
 
 class Api {
@@ -37,19 +41,27 @@ class Api {
         let config = { crossDomain: true, headers: { 'content-type': 'application/x-www-form-urlencoded' } }
         switch (type) {
           case "password":
-            return Axios.post(`${serviceBase}token`, `grant_type=password&username=${credentials.userName}&password=${credentials.password}`, config)
+            // Properly encode credentials to handle special characters
+            const params = new URLSearchParams()
+            params.append('grant_type', 'password')
+            params.append('username', credentials.userName)
+            params.append('password', credentials.password)
+            return Axios.post(`${serviceBase}token`, params.toString(), config)
           case "id_token":
-            return Axios.post(`${serviceBase}token`, `grant_type=id_token&id_token=${credentials.id_token}`, config)
+            const tokenParams = new URLSearchParams()
+            tokenParams.append('grant_type', 'id_token')
+            tokenParams.append('id_token', credentials.id_token)
+            return Axios.post(`${serviceBase}token`, tokenParams.toString(), config)
+          default:
+            return Promise.reject(new Error('Invalid authentication type'))
         }
       },
       forgotPassword(userName) { return Axios.post(`${serviceBase}api/account/forgotpassword`, { UserName: userName }); },
       externalInfo() { return Axios.get(`${serviceBase}api/AuthInstance`, { headers: getSecurityHeader() }) },
-      versionCheck() { 
+      versionCheck() {
         return Axios.get(`${clientBase}version.json`)
-          .then((resp) => { 
+          .then((resp) => {
             let newVersionAvailable = resp.data.version !== Version
-            if (newVersionAvailable)
-              console.log("[APP]", `New version available ${resp.data.version}`)
             return newVersionAvailable
           })
           .catch(() => false)
