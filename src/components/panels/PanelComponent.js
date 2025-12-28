@@ -1,18 +1,15 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 
-class PanelComponent extends React.Component {
+function PanelComponent({ children }) {
+  return <div className="panel-component">{children}</div>
+}
 
-  constructor(props) {
-    super(props)
-  }
+PanelComponent.propTypes = {
+  children: PropTypes.node,
+}
 
-  render() {
-    return (
-      <div className="panel-component">
-      </div>
-    )
-  }
-
+PanelComponent.defaultProps = {
+  children: undefined,
 }
 
 export default PanelComponent
