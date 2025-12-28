@@ -1,10 +1,12 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { loadProgressBar } from 'axios-progress-bar'
 
-loadProgressBar()
+function LoadingBar() {
+  useEffect(() => {
+    loadProgressBar()
+  }, [])
 
-const LoadingBar = () => (
-  <div />
-)
+  return <div id="nprogress-container" aria-live="polite" />
+}
 
 export default LoadingBar

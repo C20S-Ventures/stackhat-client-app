@@ -1,142 +1,169 @@
-import React from 'react'
-import { Redirect, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Navigate, Link, useLocation } from 'react-router-dom'
 import { Button, Alert, Panel } from 'react-bootstrap'
-import { inject } from 'mobx-react'
+import { inject, observer } from 'mobx-react'
+import PropTypes from 'prop-types'
 import QueryString from 'query-string'
 import Notify from '../../services/Notify'
 import FieldGroup from '../../components/forms/FieldGroup'
 import LoginLogo from './LoginLogo'
 import LoadingSpinner from '../../components/LoadingSpinner'
 
-class Login extends React.Component {
+function Login({ Authentication, Settings, Stores }) {
+  const location = useLocation()
+  const [mode, setMode] = useState('normal')
+  const [ssoState, setSsoState] = useState(null)
+  const [userName, setUserName] = useState('')
+  const [password, setPassword] = useState('')
+  const [message, setMessage] = useState('')
 
-  state = {
-    redirectToReferrer: false,
-    mode: "normal",
-    userName: "",
-    password: "",
-    message: ""
-  }
+  useEffect(() => {
+    // Reset stores
+    Stores.Reset()
 
-  componentDidMount() {
-    // reset stores
-    this.props.Stores.Reset()
+    const qs = QueryString.parse(location.search)
+    const hash = QueryString.parse(location.hash)
 
-    var qs = QueryString.parse(location.search)
-    var hash = QueryString.parse(location.hash)
-
-    // sign out on unauth
-    if (qs.reason === "unauth" || qs.reason === "idle") {
-      this.props.Authentication.SignOut()
-      this.setState({ message: qs.reason === "idle" ? "Your session has expired" : "Authentication is required." })
+    // Sign out on unauth
+    if (qs.reason === 'unauth' || qs.reason === 'idle') {
+      Authentication.SignOut()
+      setMessage(qs.reason === 'idle' ? 'Your session has expired' : 'Authentication is required.')
     }
 
-    // sso
-    if (qs.mode === "sso") {
-      this.setState({ mode: "sso", sso: "init" })
+    // SSO
+    if (qs.mode === 'sso') {
+      setMode('sso')
+      setSsoState('init')
     } else if (hash.id_token) {
-      this.setState({ mode: "sso", sso: "authed" })
-      this.loginSSO(hash.id_token)
+      setMode('sso')
+      setSsoState('authed')
+      loginSSO(hash.id_token)
     }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  }
+  const handleLogin = (event) => {
+    event.preventDefault()
 
-  login = (event) => {
-    event.preventDefault();
-
-    this.props.Authentication.Authenticate({
-      type: "password",
-      credentials: {
-        userName: this.state.userName,
-        password: this.state.password,
-      },
+    Authentication.Authenticate({
+      type: 'password',
+      credentials: { userName, password },
       success: () => {
-        this.setState(() => ({ redirectToReferrer: true }))
-
-        // clear body class
-        document.body.className = ""
+        document.body.className = ''
       },
       error: (error) => {
-        Notify.error(error.error_description)
-      }
-    });
-  }
-
-  loginSSO = (id_token) => {
-
-    this.props.Authentication.Authenticate({
-      type: "id_token",
-      credentials: { id_token },
-      success: () => {
-        this.setState(() => ({ redirectToReferrer: true }))
-
-        // clear body class
-        document.body.className = ""
+        Notify.error(error?.error_description || 'Login failed')
       },
-      error: (error) => {
-        this.setState({ sso: "error", message: error.error_description ? error.error_description : error.toString() })
-      }
     })
   }
 
-  handleInputChange = (event) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
+  const loginSSO = (id_token) => {
+    Authentication.Authenticate({
+      type: 'id_token',
+      credentials: { id_token },
+      success: () => {
+        document.body.className = ''
+      },
+      error: (error) => {
+        setSsoState('error')
+        setMessage(error?.error_description || error?.toString() || 'SSO login failed')
+      },
+    })
   }
 
-  render() {
-    const { from } = this.props.location.state || { from: { pathname: '/' } }
-    const { redirectToReferrer, mode, sso, message } = this.state
+  // Redirect if authenticated
+  if (Authentication.IsAuthenticated) {
+    const redirectTo = Settings.user?.start_module || '/dashboard'
+    return <Navigate to={redirectTo} replace />
+  }
 
-    if (this.props.Authentication.IsAuthenticated) {
-      if (this.props.Settings.user && this.props.Settings.user.start_module)
-        return <Redirect to={this.props.Settings.user.start_module} />
-      else {
-        this.props.Authentication.SignOut()
-        return <Redirect to="/" />
-      }
-    }
+  return (
+    <div className="text-center">
+      <form className="form-signin" onSubmit={handleLogin}>
+        <LoginLogo />
 
-    return (
-      <div className="text-center">
-        <form className="form-signin" onSubmit={this.login}>
-          <LoginLogo />
-          {mode !== "sso" && <div>
-
-            {message && <Alert bsStyle="warning">{message}</Alert>}
+        {mode !== 'sso' && (
+          <div>
+            {message && (
+              <Alert bsStyle="warning" role="alert">
+                {message}
+              </Alert>
+            )}
 
             <Panel>
               <Panel.Body>
                 <p>Please sign in</p>
 
-                <FieldGroup type="email" placeholder="Enter email" name="userName" value={this.state.userName} onChange={this.handleInputChange} required />
-                <FieldGroup type="password" placeholder="Password" name="password" value={this.state.password} onChange={this.handleInputChange} required />
+                <FieldGroup
+                  type="email"
+                  placeholder="Enter email"
+                  name="userName"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  required
+                  autoComplete="email"
+                  aria-label="Email address"
+                />
+                <FieldGroup
+                  type="password"
+                  placeholder="Password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                  aria-label="Password"
+                />
 
-                <Button type="submit" bsStyle="primary" block>Sign in</Button>
+                <Button type="submit" bsStyle="primary" block>
+                  Sign in
+                </Button>
               </Panel.Body>
             </Panel>
 
             <Link to="/password">Forgot password?</Link>
-          </div>}
-          {mode === "sso" && <div>
+          </div>
+        )}
+
+        {mode === 'sso' && (
+          <div>
             <Panel>
               <Panel.Body>
-                {sso === "init" && <p>Redirecting you to sign in provider...</p>}
-                {sso === "authed" && <p>Signing you in, please wait...</p>}
-                {sso === "error" && <div><p>An error occurred, please contact support.</p>{message && <p><strong>Error:</strong> {message}</p>}</div>}
-                {sso !== "error" && <LoadingSpinner />}
+                {ssoState === 'init' && <p>Redirecting you to sign in provider...</p>}
+                {ssoState === 'authed' && <p>Signing you in, please wait...</p>}
+                {ssoState === 'error' && (
+                  <div role="alert">
+                    <p>An error occurred, please contact support.</p>
+                    {message && (
+                      <p>
+                        <strong>Error:</strong> {message}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {ssoState !== 'error' && <LoadingSpinner />}
               </Panel.Body>
             </Panel>
-          </div>}
-        </form>
-      </div>
-    )
-  }
+          </div>
+        )}
+      </form>
+    </div>
+  )
 }
 
-export default inject("Settings", "Authentication","Stores")(Login)
+Login.propTypes = {
+  Authentication: PropTypes.shape({
+    IsAuthenticated: PropTypes.bool.isRequired,
+    Authenticate: PropTypes.func.isRequired,
+    SignOut: PropTypes.func.isRequired,
+  }).isRequired,
+  Settings: PropTypes.shape({
+    user: PropTypes.shape({
+      start_module: PropTypes.string,
+    }),
+  }).isRequired,
+  Stores: PropTypes.shape({
+    Reset: PropTypes.func.isRequired,
+  }).isRequired,
+}
+
+export default inject('Settings', 'Authentication', 'Stores')(observer(Login))

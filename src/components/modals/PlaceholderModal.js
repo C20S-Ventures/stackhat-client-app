@@ -1,29 +1,32 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import { Modal, Button } from 'react-bootstrap'
 
-class PlaceholderModal extends React.Component {
+function PlaceholderModal({ title, onHide }) {
+  return (
+    <Modal show={true} onHide={onHide}>
+      <Modal.Header>
+        <Modal.Title>{title || 'Editor'}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <p>Form currently unavailable.</p>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={onHide}>Cancel</Button>
+        <Button bsStyle="primary" onClick={onHide}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
 
-  handleConfirm = () => {
-    this.props.onConfirm()
-  }
+PlaceholderModal.propTypes = {
+  title: PropTypes.string,
+  onHide: PropTypes.func.isRequired,
+}
 
-  render() {
-
-    return (
-      <Modal show={true} onHide={this.props.onHide}>
-        <Modal.Header>
-          <Modal.Title>{this.props.title ? this.props.title : "Editor"}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Form currently unavailable.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.props.onHide}>Cancel</Button>
-          <Button bsStyle="primary" onClick={this.handleSave}>Save</Button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
+PlaceholderModal.defaultProps = {
+  title: 'Editor',
 }
 
 export default PlaceholderModal
