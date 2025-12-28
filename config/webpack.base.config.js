@@ -1,19 +1,23 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-const WebpackAutoInject = require('webpack-auto-inject-version')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const WebpackAutoInject = require('webpack-auto-inject-version');
+const path = require('path');
 
 module.exports = {
-
-  /* exclude jquery for react slider dep */
+  // Exclude jquery for react slider dep
   externals: {
     jquery: 'jQuery'
   },
 
-  entry: [
-    "babel-polyfill", "./src/index.js"
-  ],  
+  entry: ['./src/index.js'],
 
-  module: {  
+  output: {
+    path: path.resolve(__dirname, '../dist'),
+    filename: '[name].[contenthash].js',
+    clean: true,
+  },
+
+  module: {
     rules: [
       {
         test: /\.js$/,
@@ -24,52 +28,58 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        exclude: /Print\.scss/,        
-        use: [ "style-loader", "css-loader", "sass-loader" ]
-      }, 
-      {
-        test: /Print\.scss$/,    
-        use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: [ "css-loader", "sass-loader" ]
-        })        
+        exclude: /Print\.scss/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
-        test: /\.json$/,
-        loader: 'json-loader'
-      },             
-      {
-        test: /\.(png|jpg|gif|json)$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {}  
-          }
-        ]
-      },      
-      { 
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
-        loader: "url-loader?limit=10000&mimetype=application/font-woff" 
-      },
-      { 
-        test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, 
-        loader: "file-loader" 
+        test: /Print\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: ['eslint-loader']
-      }      
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        type: 'asset/resource',
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        type: 'asset/resource',
+      },
     ]
   },
+
   plugins: [
-    new HtmlWebpackPlugin({ 
-      title: 'New App',
-      template: './src/index.html', 
+    new HtmlWebpackPlugin({
+      title: 'StackHat App',
+      template: './src/index.html',
       filename: './index.html',
       favicon: './src/assets/icon.png'
     }),
-    new ExtractTextPlugin('print.css'), 
-    new WebpackAutoInject({  }),       
-  ]
-}
+    new MiniCssExtractPlugin({
+      filename: 'print.css'
+    }),
+    new WebpackAutoInject({}),
+  ],
+
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, '../src'),
+    }
+  },
+
+  devServer: {
+    static: {
+      directory: path.join(__dirname, '../dist'),
+    },
+    historyApiFallback: true,
+    hot: true,
+    port: 4001,
+  },
+
+  cache: {
+    type: 'filesystem',
+  },
+};

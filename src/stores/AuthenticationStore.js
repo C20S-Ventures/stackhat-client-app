@@ -1,9 +1,7 @@
-import { decorate, observable, action, runInAction } from 'mobx'
+import { makeObservable, observable, action, runInAction } from 'mobx'
 import LocalStorage from 'local-storage'
 
 import Api from '../services/Api'
-import Notify from '../services/Notify'
-
 import ClientSettingStore from './ClientSettingStore'
 
 class AuthenticationStore {
@@ -12,10 +10,20 @@ class AuthenticationStore {
   Principal = getPrincipal()
   Settings = new ClientSettingStore()
 
-  Initialise() {
-    let authData = getLocalStorage()
+  constructor() {
+    makeObservable(this, {
+      IsAuthenticated: observable,
+      Principal: observable,
+      Authenticate: action,
+      SignOut: action,
+      Initialise: action
+    })
+  }
 
-    return new Promise((resolve, reject) => {
+  Initialise() {
+    const authData = getLocalStorage()
+
+    return new Promise((resolve) => {
 
       if (authData) {
         if (authData.isAuth) {
@@ -26,7 +34,7 @@ class AuthenticationStore {
           this.Settings.Load(this.Principal.userId, this.Principal.organisation)
             .then(() => {
               resolve()
-            }).catch((err) => {
+            }).catch(() => {
               this.SignOut(() => {
                 resolve()
               })
@@ -51,14 +59,14 @@ class AuthenticationStore {
   Authenticate({ type, credentials, success, error }) {
 
     return Api.Authentication.login(type, credentials)
-      .then((response, e) => {
+      .then((response) => {
 
         // set principal
         runInAction(() => {
           this.Principal = getPrincipal({ userName: credentials.userName }, response.data);
         })
 
-        // set local storage 
+        // set local storage
         setLocalStorage(this.Principal)
 
         // load settings
@@ -70,18 +78,18 @@ class AuthenticationStore {
               this.IsAuthenticated = true
             })
 
-            // call back 
+            // call back
             if (success) {
-              setTimeout(success(response), 0);
+              setTimeout(() => success(response), 0);
             }
 
           }).catch((err) => {
             // sign out
             this.SignOut();
 
-            // call back 
+            // call back
             if (error) {
-              setTimeout(error(err.response.data), 0);
+              setTimeout(() => error(err.response?.data), 0);
             }
           });
 
@@ -90,11 +98,11 @@ class AuthenticationStore {
         // sign out
         this.SignOut();
 
-        let message = err.response ? err.response.data : ("Unable to contact server." + ((type !== "id_token") ? " Please try again." : ""))
+        const message = err.response ? err.response.data : ("Unable to contact server." + ((type !== "id_token") ? " Please try again." : ""))
 
-        // call back 
+        // call back
         if (error) {
-          setTimeout(error(message), 0);
+          setTimeout(() => error(message), 0);
         }
 
       });
@@ -113,22 +121,23 @@ class AuthenticationStore {
     // clear settings
     this.Settings.Reset()
 
-    // call back 
-    setTimeout(cb, 0)
+    // call back
+    if (cb) {
+      setTimeout(cb, 0)
+    }
   }
 
   RedirectLogin(reason) {
     this.SignOut()
-    location.href = `/?reason=${reason}`    
+    window.location.href = `/?reason=${encodeURIComponent(reason)}`
   }
 
   IsInRole(name) {
     return this.Principal.roles.indexOf(name.toLowerCase()) > -1
-    console.log(this.Principal.roles)
   }
 
   IsUser(id) {
-    if (!id) return false   
+    if (!id) return false
     return this.Principal.userId === id
   }
 
@@ -148,7 +157,7 @@ function getPrincipal(loginData, response) {
       roles: []
     }
   } else {
-    let result = {
+    const result = {
       isAuth: true,
       token: response.access_token,
       userName: loginData.userName,
@@ -160,29 +169,20 @@ function getPrincipal(loginData, response) {
       license: JSON.parse(response.license),
       roles: (""+response.roles).split(",").map((s) => s.toLowerCase()),
     }
-    console.log("[AUTH][GP]", result)  
-    return result      
+    return result
   }
 }
+
 function getLocalStorage() {
-  let result = LocalStorage.get('PrincipalData')
-  if (result)
-    console.log("[AUTH][LS]", result)    
-  return result
+  return LocalStorage.get('PrincipalData')
 }
+
 function setLocalStorage(data) {
   LocalStorage.set('PrincipalData', data)
 }
+
 function clearLocalStorage() {
   LocalStorage.remove('PrincipalData')
 }
-
-decorate(AuthenticationStore, {
-  IsAuthenticated: observable,
-  Principal: observable,
-  Authenticate: action,
-  SignOut: action,
-  Initialise: action
-})
 
 export default new AuthenticationStore()

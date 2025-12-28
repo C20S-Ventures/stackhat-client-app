@@ -1,11 +1,9 @@
-import React from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { ToastContainer } from 'react-toastify'
-import { Switch, Route } from 'react-router-dom'
-import { inject } from 'mobx-react'
-import IdleTimer from 'react-idle-timer'
+import { Routes, Route } from 'react-router-dom'
+import { inject, observer } from 'mobx-react'
+import { useIdleTimer } from 'react-idle-timer'
 import Config from 'react-global-configuration'
-
-import Version from '../services/Version'
 
 import LoadingBar from '../components/LoadingBar'
 import Header from '../components/Header'
@@ -18,69 +16,80 @@ import Dashboard from './dashboard'
 import Account from './account'
 import Logout from './public/Logout'
 import Password from './public/Password'
-import { ErrorBoundary } from '../components/errors';
+import { ErrorBoundary } from '../components/errors'
 import Theme from '../components/Theme'
 import Api from '../services/Api'
 import Notify from '../services/Notify'
 
 const ConfigAuth = Config.get("auth")
 
-class Master extends React.Component {
+const Master = ({ Authentication }) => {
+  const versionCheckTimer = useRef(null)
 
-  componentDidMount() {
-    if (ConfigAuth.versionCheck.enabled)
-      this.initVersionCheck() // start version checks
-  }
+  const handleIdle = useCallback(() => {
+    Authentication.RedirectLogin("idle")
+  }, [Authentication])
 
-  handleIdle = () => {
-    console.log("[MASTER]", "User is idle, sign out...")
-    this.props.Authentication.RedirectLogin("idle")
-  }
-
-  initVersionCheck = () => setTimeout(this.handleVersionCheck, ConfigAuth.versionCheck.intervalMs)
-  handleVersionCheck = () => {
-    console.log("[APP]", "Running version check")
+  const handleVersionCheck = useCallback(() => {
     Api.Authentication.versionCheck()
       .then(newVersionAvailable => {
-        if (newVersionAvailable)
+        if (newVersionAvailable) {
           Notify.newVersionReload()
-        else
-          this.initVersionCheck() // reinit version check        
+        } else {
+          versionCheckTimer.current = setTimeout(handleVersionCheck, ConfigAuth.versionCheck.intervalMs)
+        }
       })
-  }
+  }, [])
 
-  render() {
+  useEffect(() => {
+    if (ConfigAuth.versionCheck.enabled) {
+      versionCheckTimer.current = setTimeout(handleVersionCheck, ConfigAuth.versionCheck.intervalMs)
+    }
+    return () => {
+      if (versionCheckTimer.current) {
+        clearTimeout(versionCheckTimer.current)
+      }
+    }
+  }, [handleVersionCheck])
 
-    let auth = this.props.Authentication
-    let isAuth = auth.IsAuthenticated
+  useIdleTimer({
+    timeout: ConfigAuth.idleTimeoutMs,
+    onIdle: handleIdle,
+    disabled: !Authentication.IsAuthenticated,
+  })
 
-    document.body.className = isAuth ? "" : "public"
+  const isAuth = Authentication.IsAuthenticated
+  document.body.className = isAuth ? "" : "public"
 
-    return (
-      <div className="master" >
-        <LoadingBar />
-        <Theme />
-        <Header />
-        <div className="main container-fluid">
-          <ErrorBoundary>
-            <Switch>
-              <Route exact path='/' component={Login} />
-              <Route exact path='/password' component={Password} />
-              <PrivateRoute path='/dashboard' component={Dashboard} />
-              <PrivateRoute path='/dashboard/*' component={Dashboard} />
-              <PrivateRoute path='/account' component={Account} />
-              <PrivateRoute path='/account/*' component={Account} />
-              <Route path='/logout' component={Logout} />
-            </Switch>
-          </ErrorBoundary>
-        </div>
-        <Footer />
-        <ToastContainer autoClose={8000} position={'bottom-left'} />
-        <PrintFrame />
-        {auth.IsAuthenticated && <IdleTimer onIdle={this.handleIdle} timeout={ConfigAuth.idleTimeoutMs} />}
-      </div>
-    )
-  }
-
+  return (
+    <div className="master">
+      <LoadingBar />
+      <Theme />
+      <Header />
+      <main className="main container-fluid" role="main">
+        <ErrorBoundary>
+          <Routes>
+            <Route path='/' element={<Login />} />
+            <Route path='/password' element={<Password />} />
+            <Route path='/dashboard/*' element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } />
+            <Route path='/account/*' element={
+              <PrivateRoute>
+                <Account />
+              </PrivateRoute>
+            } />
+            <Route path='/logout' element={<Logout />} />
+          </Routes>
+        </ErrorBoundary>
+      </main>
+      <Footer />
+      <ToastContainer autoClose={8000} position={'bottom-left'} />
+      <PrintFrame />
+    </div>
+  )
 }
-export default inject("Authentication")(Master)
+
+export default inject("Authentication")(observer(Master))

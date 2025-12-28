@@ -1,0 +1,18 @@
+module.exports = {
+  presets: [
+    ['@babel/preset-env', {
+      targets: {
+        browsers: ['> 1%', 'last 2 versions', 'not dead']
+      },
+      useBuiltIns: 'usage',
+      corejs: 3
+    }],
+    ['@babel/preset-react', {
+      runtime: 'automatic'
+    }]
+  ],
+  plugins: [
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
+    ['@babel/plugin-proposal-class-properties', { loose: true }]
+  ]
+};

@@ -1,7 +1,15 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 
-export default (({ ...props }) => (
-  <div className="panel-heading__functions">
-    {props.children}
-  </div>
-))
+function PanelHeadingFunctions({ children }) {
+  return <div className="panel-heading__functions">{children}</div>
+}
+
+PanelHeadingFunctions.propTypes = {
+  children: PropTypes.node,
+}
+
+PanelHeadingFunctions.defaultProps = {
+  children: undefined,
+}
+
+export default PanelHeadingFunctions

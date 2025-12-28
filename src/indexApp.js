@@ -1,14 +1,15 @@
-import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'mobx-react'
 import QueryString from 'query-string'
 
-import Config from './config'
+import './config'
 
 // version
 import Version from './services/Version'
-console.log(`[APP] v${Version}`)
+if (process.env.NODE_ENV !== 'production') {
+  console.log(`[APP] v${Version}`)
+}
 
 import {
   AuthenticationStore as auth
@@ -17,8 +18,6 @@ import {
 import './Styles.scss'
 import './Print.scss'
 
-//let ver = require('./version.json')
-
 import ErrorBoundary from './components/errors/ErrorBoundary'
 import Master from './areas/Master'
 
@@ -26,7 +25,7 @@ import './assets/icon.png'
 import './assets/spinner.svg'
 import { Stores } from './services'
 
-let hash = QueryString.parse(location.hash)
+const hash = QueryString.parse(location.hash)
 if (hash.mode === "logout") {
   auth.SignOut()
 }
@@ -35,17 +34,18 @@ if (hash.mode === "logout") {
 auth.Initialise()
   .then(() => {
 
-    let stores = new Stores([
- 
-    ])
+    const stores = new Stores([])
+
+    const container = document.getElementById('root')
+    const root = createRoot(container)
 
     // render
-    render((
+    root.render(
       <ErrorBoundary>
         <Provider
           Authentication={auth}
-          Settings={auth.Settings}  
-          Stores={stores}        
+          Settings={auth.Settings}
+          Stores={stores}
           {...stores}
         >
           <BrowserRouter>
@@ -53,6 +53,6 @@ auth.Initialise()
           </BrowserRouter>
         </Provider>
       </ErrorBoundary>
-    ), document.getElementById('root'));
+    )
 
   })

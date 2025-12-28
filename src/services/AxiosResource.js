@@ -79,7 +79,10 @@ class Resource {
   }
 
   log(operation, ...args) {
-    console.log("[RES]", operation, ...args)
+    // Only log in development mode
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[RES]', operation, ...args)
+    }
   }
 
   delete(id) {
@@ -151,7 +154,7 @@ class Resource {
           Array.isArray(data[property]) // array / navigation property
           || commonProps.indexOf(property) > -1) // common props
         ) {
-          console.log("[RES]", "WRITE", "DEL", property)
+          // Property stripped from write request
           delete result[property] // delete prop
         }
       }

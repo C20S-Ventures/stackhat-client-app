@@ -1,13 +1,15 @@
-import React from 'react';
+import PropTypes from 'prop-types'
 
-class SubNavArea extends React.Component {
-  render() {
-    return (
-      <div className="subnav-area pull-left">
-        {this.props.children}
-      </div>
-    )
-  }
+function SubNavArea({ children }) {
+  return <div className="subnav-area pull-left">{children}</div>
+}
+
+SubNavArea.propTypes = {
+  children: PropTypes.node,
+}
+
+SubNavArea.defaultProps = {
+  children: undefined,
 }
 
 export default SubNavArea

@@ -1,4 +1,5 @@
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Modal, Button, Table, FormControl } from 'react-bootstrap'
 import { extend, findIndex, debounce } from 'lodash'
 import { observer, inject } from 'mobx-react'
@@ -9,7 +10,7 @@ import Helper from '../../services/Helper'
 import { Paginator } from '../navigation'
 import { FormatDateShort, FormatNumber, FormatCurrency } from '../formatting'
 
-class SearcherModal extends React.Component {
+class SearcherModal extends Component {
 
   mode = "buttons"
 
@@ -321,4 +322,53 @@ class SearcherModal extends React.Component {
   }
 }
 
-export default inject("Authentication")(observer(SearcherModal))
+SearcherModal.propTypes = {
+  Authentication: PropTypes.shape({
+    Principal: PropTypes.object,
+  }).isRequired,
+  config: PropTypes.shape({
+    title: PropTypes.string,
+    sourceSetName: PropTypes.string.isRequired,
+    sourceIdName: PropTypes.string.isRequired,
+    list: PropTypes.array,
+    listIdName: PropTypes.string,
+    parentIdName: PropTypes.string,
+    parentId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    destSetName: PropTypes.string,
+    mode: PropTypes.oneOf(['buttons', 'checkboxes']),
+    search: PropTypes.string,
+    searchPlaceholder: PropTypes.string,
+    params: PropTypes.object,
+    filters: PropTypes.arrayOf(
+      PropTypes.shape({
+        property: PropTypes.string.isRequired,
+        entity: PropTypes.string,
+        type: PropTypes.string,
+        default: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]),
+      })
+    ),
+    fields: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        label: PropTypes.string,
+        type: PropTypes.string,
+        format: PropTypes.string,
+        property: PropTypes.string,
+        renderCustom: PropTypes.func,
+      })
+    ).isRequired,
+    deletes: PropTypes.arrayOf(PropTypes.string),
+    addPreTransform: PropTypes.func,
+    removeHandler: PropTypes.func,
+    onAfterAdd: PropTypes.func,
+    onAfterRemove: PropTypes.func,
+  }).isRequired,
+  onHide: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func,
+}
+
+SearcherModal.defaultProps = {
+  onConfirm: undefined,
+}
+
+export default inject('Authentication')(observer(SearcherModal))
