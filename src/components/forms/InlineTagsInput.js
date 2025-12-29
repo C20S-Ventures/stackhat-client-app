@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import { RIEInput } from 'riek'
 import { Label, Button } from 'react-bootstrap'
 import { AsyncTypeahead, Highlighter } from 'react-bootstrap-typeahead'
@@ -7,7 +7,7 @@ import { TagList } from '../navigation'
 import Api from '../../services/Api'
 import Notify from '../../services/Notify'
 
-export default class InlineTagsInput extends RIEInput {
+class InlineTagsInput extends RIEInput {
 
   state = {
     options: [],
@@ -151,3 +151,39 @@ export default class InlineTagsInput extends RIEInput {
 
 
 }
+
+InlineTagsInput.propTypes = {
+  value: PropTypes.array,
+  change: PropTypes.func.isRequired,
+  propName: PropTypes.string.isRequired,
+  icon: PropTypes.string,
+  emptyText: PropTypes.string,
+  textResolver: PropTypes.func,
+  titleResolver: PropTypes.func,
+  selectedTitleResolver: PropTypes.func,
+  labelKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  editConfig: PropTypes.shape({
+    apiSet: PropTypes.string.isRequired,
+    idKey: PropTypes.string,
+    searchKey: PropTypes.string,
+    searchKeyIsCustom: PropTypes.bool,
+    searchLimit: PropTypes.number,
+    labelKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+    minLength: PropTypes.number,
+    placeholder: PropTypes.string,
+    selectedLabelResolver: PropTypes.func,
+    onAddTag: PropTypes.func,
+    onRemoveTag: PropTypes.func,
+    onValidateRemoveTag: PropTypes.func,
+    onBeforeFinish: PropTypes.func,
+    onAfterFinish: PropTypes.func,
+  }),
+  defaultProps: PropTypes.object,
+}
+
+InlineTagsInput.defaultProps = {
+  value: [],
+  icon: 'tag',
+}
+
+export default InlineTagsInput

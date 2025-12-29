@@ -1,20 +1,23 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import { RIEInput } from 'riek'
-import ReactDatePicker from "react-16-bootstrap-date-picker"
+import ReactDatePicker from 'react-16-bootstrap-date-picker'
 import { FormatDate } from '../formatting'
 import Moment from 'moment'
 
-export default class InlineDatePicker extends RIEInput {
-
+class InlineDatePicker extends RIEInput {
   newValue = null
 
   keyDown = (event) => {
-    if (event.keyCode === 27) { this.cancelEditing() }     // Escape
+    if (event.keyCode === 27) {
+      this.cancelEditing()
+    }
   }
 
   finishEditing = () => {
-    this.props.beforeFinish ? this.props.beforeFinish() : null
-    let newValue = this.newValue // ReactDOM.findDOMNode(this.refs.input).value;
+    if (this.props.beforeFinish) {
+      this.props.beforeFinish()
+    }
+    const newValue = this.newValue
     const result = this.doValidations(newValue)
     if (result && this.props.value !== newValue) {
       this.commit(newValue)
@@ -24,16 +27,19 @@ export default class InlineDatePicker extends RIEInput {
     } else {
       this.cancelEditing()
     }
-    this.props.afterFinish ? this.props.afterFinish() : null
+    if (this.props.afterFinish) {
+      this.props.afterFinish()
+    }
   }
 
   renderEditingComponent = () => {
+    const dateValue = this.state.newValue || this.props.value || new Date()
     return (
       <span className="inline-editable-wrapper">
         <ReactDatePicker
           dateFormat="DD/MM/YYYY"
-          value={new Moment(this.state.newValue ? this.state.newValue : (this.props.value ? this.props.value : new Date())).format("YYYY-MM-DD")}
-          disables={this.state.loading}
+          value={new Moment(dateValue).format('YYYY-MM-DD')}
+          disabled={this.state.loading}
           className={this.makeClassString()}
           onChange={(val) => {
             this.newValue = new Date(val)
@@ -51,20 +57,38 @@ export default class InlineDatePicker extends RIEInput {
   }
 
   renderNormalComponent = () => {
-
+    const displayValue = this.state.newValue || this.props.value
     return (
       <div className="inline-editable-wrapper" title="Edit">
         <span className="inline-editable">
-          <span tabIndex="0"
+          <span
+            tabIndex="0"
             className={this.makeClassString()}
             onFocus={this.startEditing}
             onClick={this.startEditing}
-            {...this.props.defaultProps}>
-            {this.props.value || this.state.newValue ? <FormatDate value={this.state.newValue ? this.state.newValue : this.props.value} /> : <span>(empty)</span>}
+            {...this.props.defaultProps}
+          >
+            {displayValue ? (
+              <FormatDate value={displayValue} />
+            ) : (
+              <span>(empty)</span>
+            )}
           </span>
         </span>
       </div>
     )
-
   }
 }
+
+InlineDatePicker.propTypes = {
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+  change: PropTypes.func.isRequired,
+  propName: PropTypes.string.isRequired,
+  beforeFinish: PropTypes.func,
+  afterFinish: PropTypes.func,
+  handleValidationFail: PropTypes.func,
+  editProps: PropTypes.object,
+  defaultProps: PropTypes.object,
+}
+
+export default InlineDatePicker

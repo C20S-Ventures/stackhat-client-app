@@ -1,5 +1,6 @@
-import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Navigate } from 'react-router-dom'
 import { Panel, Button } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 import { extend } from 'lodash'
@@ -12,7 +13,7 @@ import Printer from '../print/Printer'
 import Helper from '../../services/Helper'
 import { HelpArea, Help } from '../help'
 
-class ItemEditor extends React.Component {
+class ItemEditor extends Component {
 
   state = {
     isLoading: false,
@@ -72,7 +73,7 @@ class ItemEditor extends React.Component {
   render() {
 
     if (this.state.redirectTo)
-      return (<Redirect to={this.state.redirectTo} />)
+      return (<Navigate to={this.state.redirectTo} replace />)
 
     if (!this.props.itemTitle) {
       return (null)
@@ -132,6 +133,50 @@ class ItemEditor extends React.Component {
     )
   }
 
+}
+
+ItemEditor.propTypes = {
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  editID: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  item: PropTypes.object,
+  itemTitle: PropTypes.string,
+  typeTitle: PropTypes.string,
+  titleIconName: PropTypes.string,
+  iconName: PropTypes.string,
+  helpKey: PropTypes.string,
+  enableScroller: PropTypes.bool,
+  leaveOpen: PropTypes.bool,
+  isNew: PropTypes.bool,
+  closeNavigateTo: PropTypes.string,
+  editStore: PropTypes.shape({
+    Update: PropTypes.func.isRequired,
+    Remove: PropTypes.func.isRequired,
+  }),
+  store: PropTypes.shape({
+    Copy: PropTypes.func,
+    Load: PropTypes.func,
+  }),
+  editPropNames: PropTypes.shape({
+    title: PropTypes.string,
+  }),
+  functions: PropTypes.shape({
+    print: PropTypes.bool,
+    download: PropTypes.bool,
+    remove: PropTypes.bool,
+    copy: PropTypes.bool,
+    close: PropTypes.bool,
+  }),
+  children: PropTypes.node,
+}
+
+ItemEditor.defaultProps = {
+  functions: {
+    print: true,
+    download: true,
+    remove: false,
+    copy: false,
+    close: true,
+  },
 }
 
 export default ItemEditor

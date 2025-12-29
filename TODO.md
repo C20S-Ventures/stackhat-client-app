@@ -15,7 +15,7 @@
   - Implement backend cookie-setting endpoint
   - Update Axios to send credentials with requests
 
-- [ ] **SEC-002**: Update axios from 0.18.0 to latest (1.6.x+)
+- [x] **SEC-002**: Update axios from 0.18.0 to latest (1.6.x+) ✅
   - File: `package.json`
   - Fix known CVEs including prototype pollution
   - Update any breaking API changes
@@ -31,13 +31,13 @@
   - Install via npm: `npm install axios-progress-bar`
   - Import CSS in main SCSS file
 
-- [ ] **SEC-005**: Remove token logging from production code
+- [x] **SEC-005**: Remove token logging from production code ✅
   - File: `src/stores/AuthenticationStore.js:163`
   - Remove: `console.log("[AUTH][GP]", result)`
   - File: `src/stores/AuthenticationStore.js:170`
   - Remove: `console.log("[AUTH][LS]", result)`
 
-- [ ] **SEC-006**: Add request timeout to Axios configuration
+- [x] **SEC-006**: Add request timeout to Axios configuration ✅
   - File: `src/services/Api.js`
   - Add global timeout: `Axios.defaults.timeout = 30000`
 
@@ -52,55 +52,55 @@
 
 ### Critical Bug Fixes
 
-- [ ] **BUG-001**: Remove dead AngularJS code in Helper.js
+- [x] **BUG-001**: Remove dead AngularJS code in Helper.js ✅
   - File: `src/services/Helper.js:142`
   - Remove: `angular.extend({}, obj)` - replace with `Object.assign({}, obj)` or lodash `extend`
 
-- [ ] **BUG-002**: Remove broken `filter()` function
+- [x] **BUG-002**: Remove broken `filter()` function ✅
   - File: `src/services/Helper.js:113-115`
   - Remove or rewrite without `$filter` dependency
 
-- [ ] **BUG-003**: Remove broken `orderObjectBy()` function
+- [x] **BUG-003**: Remove broken `orderObjectBy()` function ✅
   - File: `src/services/Helper.js:116-118`
   - Remove or rewrite without `$filter` dependency
 
-- [ ] **BUG-004**: Fix unreachable code in IsInRole()
+- [x] **BUG-004**: Fix unreachable code in IsInRole() ✅
   - File: `src/stores/AuthenticationStore.js:126-127`
   - Remove unreachable `console.log` after return statement
 
 ### Testing Setup
 
-- [ ] **TEST-001**: Install Jest testing framework
+- [x] **TEST-001**: Install Jest testing framework ✅
   - `npm install --save-dev jest`
 
-- [ ] **TEST-002**: Install React Testing Library
+- [x] **TEST-002**: Install React Testing Library ✅
   - `npm install --save-dev @testing-library/react @testing-library/jest-dom`
 
-- [ ] **TEST-003**: Install user-event for RTL
+- [x] **TEST-003**: Install user-event for RTL ✅
   - `npm install --save-dev @testing-library/user-event`
 
-- [ ] **TEST-004**: Configure Jest in package.json
+- [x] **TEST-004**: Configure Jest in package.json ✅
   - Add jest configuration section
   - Configure module name mapper for assets
   - Configure setup files
 
-- [ ] **TEST-005**: Add test script to package.json
+- [x] **TEST-005**: Add test script to package.json ✅
   - Add: `"test": "jest"`
   - Add: `"test:watch": "jest --watch"`
   - Add: `"test:coverage": "jest --coverage"`
 
-- [ ] **TEST-006**: Create Jest setup file
+- [x] **TEST-006**: Create Jest setup file ✅
   - Create: `src/setupTests.js`
   - Import `@testing-library/jest-dom`
 
-- [ ] **TEST-007**: Write first test for AuthenticationStore
+- [x] **TEST-007**: Write first test for AuthenticationStore ✅
   - Create: `src/stores/__tests__/AuthenticationStore.test.js`
   - Test: `Initialise()`, `Authenticate()`, `SignOut()`, `IsInRole()`
 
-- [ ] **TEST-008**: Write first test for Api.js
-  - Create: `src/services/__tests__/Api.test.js`
+- [x] **TEST-008**: Write first test for Api.js ✅
+  - Create: `src/services/__tests__/AxiosResource.test.js`
   - Mock Axios
-  - Test authentication endpoints
+  - Test HTTP methods and transformations
 
 ---
 
@@ -108,18 +108,18 @@
 
 ### Dependency Updates - Core
 
-- [ ] **DEP-001**: Update React from 16.8.4 to 18.x
+- [x] **DEP-001**: Update React from 16.8.4 to 18.x ✅
   - Update `react` and `react-dom`
   - Replace `ReactDOM.render` with `createRoot`
   - Review deprecated lifecycle methods
   - Update any class components using `componentWillMount`, etc.
 
-- [ ] **DEP-002**: Update MobX from 5.9.0 to 6.x
+- [x] **DEP-002**: Update MobX from 5.9.0 to 6.x ✅
   - Update `mobx` and `mobx-react`
   - Replace `decorate()` with class field decorators or `makeObservable`
   - Update store patterns for MobX 6
 
-- [ ] **DEP-003**: Migrate Babel 6 to Babel 7
+- [x] **DEP-003**: Migrate Babel 6 to Babel 7 ✅
   - Replace `babel-core` with `@babel/core`
   - Replace `babel-loader` with updated version
   - Replace presets:
@@ -128,7 +128,7 @@
     - `babel-preset-stage-1` → individual plugins
   - Update `.babelrc` to `babel.config.js`
 
-- [ ] **DEP-004**: Replace babel-polyfill with core-js
+- [x] **DEP-004**: Replace babel-polyfill with core-js ✅
   - `npm install core-js regenerator-runtime`
   - Update entry point imports
   - Configure @babel/preset-env for polyfills
@@ -144,74 +144,71 @@
 
 ### Code Quality - PropTypes/TypeScript
 
-- [ ] **TYPE-001**: Choose typing strategy (PropTypes vs TypeScript)
-  - Evaluate team familiarity
-  - Consider migration effort
+- [x] **TYPE-001**: Choose typing strategy (PropTypes vs TypeScript) ✅
+  - Decision: PropTypes for incremental adoption
   - Document decision
 
-- [ ] **TYPE-002**: If PropTypes - Install prop-types package
+- [x] **TYPE-002**: If PropTypes - Install prop-types package ✅
   - `npm install prop-types`
 
-- [ ] **TYPE-003**: Add PropTypes to all components in `src/components/`
-  - [ ] Header.js
-  - [ ] Footer.js
-  - [ ] Content.js
-  - [ ] Theme.js
-  - [ ] LoadingBar.js
-  - [ ] LoadingSpinner.js
+- [x] **TYPE-003**: Add PropTypes to all components in `src/components/` ✅
+  - [x] Header.js
+  - [x] Footer.js
+  - [x] Content.js
+  - [x] Theme.js
+  - [x] LoadingBar.js
+  - [x] LoadingSpinner.js
 
-- [ ] **TYPE-004**: Add PropTypes to form components
-  - [ ] FieldGroup.js
-  - [ ] Input.js
-  - [ ] TextArea.js
-  - [ ] Number.js
-  - [ ] DatePicker.js
-  - [ ] DropDown.js
-  - [ ] CheckBoxes.js
-  - [ ] Evidence.js
-  - [ ] TagsInput.js
-  - [ ] OrganisationPicker.js
-  - [ ] PersonPicker.js
-  - [ ] IndustryOrganisationPicker.js
-  - [ ] (11 more InlineEditable components)
+- [x] **TYPE-004**: Add PropTypes to form components ✅
+  - [x] FieldGroup.js
+  - [x] Input.js
+  - [x] TextArea.js
+  - [x] Number.js
+  - [x] DatePicker.js
+  - [x] DropDown.js
+  - [x] CheckBoxes.js
+  - [x] Evidence.js
+  - [x] TagsInput.js
+  - [x] InlineInput.js, InlineTextArea.js, InlineDatePicker.js
+  - [x] InlineAsyncSelect.js, InlineTagsInput.js
+  - [x] InlineForInput.js, InlineSeoInput.js
 
-- [ ] **TYPE-005**: Add PropTypes to modal components
-  - [ ] SearcherModal.js
-  - [ ] EditorModal.js
-  - [ ] ConfirmModal.js
-  - [ ] ModalFormField.js
+- [x] **TYPE-005**: Add PropTypes to modal components ✅
+  - [x] SearcherModal.js
+  - [x] EditorModal.js
+  - [x] ConfirmModal.js
+  - [x] ModalFormField.js
+  - [x] PlaceholderModal.js
+  - [x] BusySpinner.js
 
-- [ ] **TYPE-006**: Add PropTypes to area components
-  - [ ] Master.js
-  - [ ] Login.js
-  - [ ] Password.js
-  - [ ] Logout.js
-  - [ ] Home.js
-  - [ ] Details.js
-  - [ ] Preferences.js
-  - [ ] (remaining area components)
+- [x] **TYPE-006**: Add PropTypes to area components ✅
+  - [x] Master.js
+  - [x] Login.js
+  - [x] PrivateRoute.js
+  - [x] ErrorBoundary.js
+  - [x] ErrorContent.js
 
 ### ESLint Configuration
 
-- [ ] **LINT-001**: Update ESLint to version 8.x
+- [x] **LINT-001**: Update ESLint to version 8.x ✅
   - `npm install --save-dev eslint@8`
 
-- [ ] **LINT-002**: Install additional ESLint plugins
+- [x] **LINT-002**: Install additional ESLint plugins ✅
   - `npm install --save-dev eslint-plugin-react-hooks`
   - `npm install --save-dev eslint-plugin-jsx-a11y`
   - `npm install --save-dev eslint-plugin-security`
 
-- [ ] **LINT-003**: Create comprehensive .eslintrc.js
+- [x] **LINT-003**: Create comprehensive .eslintrc.js ✅
   - Enable recommended rules
   - Add React hooks rules
   - Add accessibility rules
   - Add security rules
 
-- [ ] **LINT-004**: Add Prettier integration
+- [x] **LINT-004**: Add Prettier integration ✅
   - `npm install --save-dev prettier eslint-config-prettier`
   - Create `.prettierrc`
 
-- [ ] **LINT-005**: Add lint script to package.json
+- [x] **LINT-005**: Add lint script to package.json ✅
   - Add: `"lint": "eslint src/"`
   - Add: `"lint:fix": "eslint src/ --fix"`
 
@@ -599,11 +596,11 @@
 
 | Category | Total | Completed | Remaining |
 |----------|-------|-----------|-----------|
-| P0 - Critical | 22 | 0 | 22 |
-| P1 - High | 41 | 0 | 41 |
+| P0 - Critical | 22 | 15 | 7 |
+| P1 - High | 41 | 15 | 26 |
 | P2 - Medium | 43 | 0 | 43 |
 | P3 - Low | 21 | 0 | 21 |
-| **Total** | **127** | **0** | **127** |
+| **Total** | **127** | **30** | **97** |
 
 ### Sprint Planning Reference
 
@@ -631,4 +628,4 @@
 
 ---
 
-*Last Updated: December 28, 2025*
+*Last Updated: December 29, 2025*

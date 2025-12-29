@@ -1,4 +1,5 @@
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Panel, FormControl, Clearfix, SplitButton, MenuItem, Button } from 'react-bootstrap'
 import { debounce, filter } from 'lodash'
 import Icon from 'react-fontawesome'
@@ -8,11 +9,11 @@ import { Element as ScrollElement } from 'react-scroll'
 import { Paginator, PanelLink } from '../navigation'
 import { FormatDate } from '../formatting'
 import { HelpArea, Help } from '../help'
-import { PanelHeadingFunctions, PanelHeadingButton } from '../panels';
-import { BusySpinner } from '../modals';
-import { ErrorBoundary } from '../errors';
+import { PanelHeadingFunctions, PanelHeadingButton } from '../panels'
+import { BusySpinner } from '../modals'
+import { ErrorBoundary } from '../errors'
 
-class ItemList extends React.Component {
+class ItemList extends Component {
 
   state = {
     collapsed: false
@@ -300,6 +301,71 @@ class ItemList extends React.Component {
     })
   }
 
+}
+
+ItemList.propTypes = {
+  store: PropTypes.shape({
+    Items: PropTypes.array,
+    Total: PropTypes.number,
+    IsLoading: PropTypes.bool,
+    Query: PropTypes.object,
+    Load: PropTypes.func.isRequired,
+    ExtendQuery: PropTypes.func.isRequired,
+  }).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      id: PropTypes.string,
+    }),
+  }),
+  heading: PropTypes.node,
+  titleIconName: PropTypes.string,
+  titleName: PropTypes.string,
+  titleResolver: PropTypes.func,
+  idName: PropTypes.string,
+  iconName: PropTypes.string,
+  iconResolver: PropTypes.func,
+  searchKey: PropTypes.string,
+  searchPlaceholder: PropTypes.string,
+  onSearchChanged: PropTypes.func,
+  getSearchValue: PropTypes.func,
+  sortByOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      Key: PropTypes.string.isRequired,
+      Name: PropTypes.string.isRequired,
+    })
+  ),
+  filters: PropTypes.array,
+  hasNew: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
+  newLink: PropTypes.string,
+  hasCustomButtons: PropTypes.func,
+  customTools: PropTypes.func,
+  renderListItemContent: PropTypes.func,
+  renderListUnlinked: PropTypes.bool,
+  navigateToResolver: PropTypes.func,
+  onAfterLoad: PropTypes.func,
+  noItemsText: PropTypes.string,
+  scrollToId: PropTypes.string,
+  paging: PropTypes.oneOf(['more', 'paginate']),
+  pagingMoreCount: PropTypes.number,
+  pageSizes: PropTypes.arrayOf(PropTypes.number),
+  paginatorTop: PropTypes.bool,
+  paginatorBottom: PropTypes.bool,
+  collapsible: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.shape({
+      collapsed: PropTypes.bool,
+      onCollapseChange: PropTypes.func,
+    }),
+  ]),
+  prominent: PropTypes.bool,
+  busyShowTools: PropTypes.bool,
+  helpKey: PropTypes.string,
+}
+
+ItemList.defaultProps = {
+  paginatorTop: true,
+  paginatorBottom: true,
+  pageSizes: [5, 10, 20],
 }
 
 export default withRouter(observer(ItemList))

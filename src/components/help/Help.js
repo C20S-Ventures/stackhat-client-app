@@ -1,13 +1,12 @@
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import Icon from 'react-fontawesome'
-import { extend } from 'lodash'
 import { inject, observer } from 'mobx-react'
 import { Modal, Button } from 'react-bootstrap'
-import { InlineTextArea } from '../forms';
-import continuousColorLegend from 'react-vis/dist/legends/continuous-color-legend';
-import { BusySpinner } from '../modals';
+import { InlineTextArea } from '../forms'
+import { BusySpinner } from '../modals'
 
-class Help extends React.Component {
+class Help extends Component {
 
   state = {
     show: false
@@ -71,4 +70,17 @@ class Help extends React.Component {
 
 }
 
-export default inject("Authentication")(observer(Help))
+Help.propTypes = {
+  helpKey: PropTypes.string.isRequired,
+  Authentication: PropTypes.shape({
+    Settings: PropTypes.shape({
+      help: PropTypes.object,
+      IsLoading: PropTypes.bool,
+      SetHelp: PropTypes.func.isRequired,
+      ResetHelpDefault: PropTypes.func.isRequired,
+    }).isRequired,
+    IsInRole: PropTypes.func.isRequired,
+  }).isRequired,
+}
+
+export default inject('Authentication')(observer(Help))
