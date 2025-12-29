@@ -1,4 +1,5 @@
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import { FormControl } from 'react-bootstrap'
 
@@ -20,7 +21,7 @@ import {
 } from '../forms'
 import ModalFormField from '../modals/ModalFormField'
 
-class ItemCreatorFields extends React.Component {
+class ItemCreatorFields extends Component {
 
   render() {
     let { form, fields, groups } = this.props
@@ -91,6 +92,17 @@ class ItemCreatorFields extends React.Component {
     })
   }
 
+}
+
+ItemCreatorFields.propTypes = {
+  form: PropTypes.object.isRequired,
+  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
+  groups: PropTypes.arrayOf(
+    PropTypes.shape({
+      heading: PropTypes.string,
+      fields: PropTypes.arrayOf(PropTypes.string),
+    })
+  ),
 }
 
 export default observer(ItemCreatorFields)
