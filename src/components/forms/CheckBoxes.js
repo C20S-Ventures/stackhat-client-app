@@ -1,41 +1,60 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Checkbox } from 'react-bootstrap'
 
-class CheckBoxes extends React.Component {
+function CheckBoxes({ field, options: initialOptions }) {
+  const [options, setOptions] = useState([])
 
-  state = {
-    options: []
+  useEffect(() => {
+    const opts = [...initialOptions]
+    setOptions(opts)
+    field.set(opts)
+  }, [initialOptions, field])
+
+  const handleCheckChange = (index) => {
+    const updatedOptions = [...options]
+    updatedOptions[index].checked = !updatedOptions[index].checked
+    setOptions(updatedOptions)
+    field.set(updatedOptions)
   }
 
-  componentDidMount() {
-    let { field, options } = this.props
-    this.setState({ options: [...options] })
-    field.set([...options]) // init field value
-  }
-
-  handleCheckChange = (field, index) => {
-    let options = this.state.options
-    options[index].checked = !options[index].checked
-    this.setState({ options: [...options] })
-    field.set([...options])
-  }
-
-  render() {
-    let { field } = this.props
-    let { options } = this.state
-
-    return <div>
+  return (
+    <div>
       {!options.length && <span>No items</span>}
-      {
-        options.map((option, index) =>
-          <Checkbox key={index} onChange={(e) => this.handleCheckChange(field, index)} checked={option.checked}>
-            <strong>{option.text}</strong>
-            {option.description && <em><br />{option.description}</em>}
-          </Checkbox>
-        )
-      }
+      {options.map((option, index) => (
+        <Checkbox
+          key={index}
+          onChange={() => handleCheckChange(index)}
+          checked={option.checked}
+        >
+          <strong>{option.text}</strong>
+          {option.description && (
+            <em>
+              <br />
+              {option.description}
+            </em>
+          )}
+        </Checkbox>
+      ))}
     </div>
-  }
+  )
+}
+
+CheckBoxes.propTypes = {
+  field: PropTypes.shape({
+    set: PropTypes.func.isRequired,
+  }).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      description: PropTypes.string,
+      checked: PropTypes.bool,
+    })
+  ),
+}
+
+CheckBoxes.defaultProps = {
+  options: [],
 }
 
 export default CheckBoxes

@@ -1,13 +1,15 @@
-import React from 'react';
+import PropTypes from 'prop-types'
 
-class HelpArea extends React.Component {
-  render() {
-    return (
-      <div className="help-area">
-        {this.props.children}
-      </div>
-    )
-  }
+function HelpArea({ children }) {
+  return <div className="help-area">{children}</div>
+}
+
+HelpArea.propTypes = {
+  children: PropTypes.node,
+}
+
+HelpArea.defaultProps = {
+  children: undefined,
 }
 
 export default HelpArea

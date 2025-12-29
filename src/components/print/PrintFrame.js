@@ -1,5 +1,5 @@
-import React from 'react'
+function PrintFrame() {
+  return <iframe id="ifmcontentstoprint" className="print-frame" title="Print Frame" />
+}
 
-export default () => (
-  <iframe id="ifmcontentstoprint" className="print-frame"></iframe>
-)
+export default PrintFrame

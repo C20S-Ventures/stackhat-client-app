@@ -1,7 +1,15 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 
-export default (props) => (
-  <strong className="pr block">
-    {...props.children}
-  </strong>
-)
+function PrintStrong({ children }) {
+  return <strong className="pr block">{children}</strong>
+}
+
+PrintStrong.propTypes = {
+  children: PropTypes.node,
+}
+
+PrintStrong.defaultProps = {
+  children: undefined,
+}
+
+export default PrintStrong
