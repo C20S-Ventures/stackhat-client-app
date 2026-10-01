@@ -6,7 +6,12 @@ jest.mock('../../services/Api', () => ({
     login: jest.fn(),
     forgotPassword: jest.fn(),
   },
+  ClientSettings: {
+    get: jest.fn(),
+  },
 }))
+
+const settingsResponse = { data: { org: {}, user: {}, help: {} } }
 
 // Mock local-storage
 jest.mock('local-storage', () => ({
@@ -15,12 +20,10 @@ jest.mock('local-storage', () => ({
   remove: jest.fn(),
 }))
 
-// We need to import after mocks are set up
-import LocalStorage from 'local-storage'
-import Api from '../../services/Api'
-
 describe('AuthenticationStore', () => {
   let AuthenticationStore
+  let LocalStorage
+  let Api
 
   beforeEach(() => {
     // Clear all mocks
@@ -29,7 +32,9 @@ describe('AuthenticationStore', () => {
     // Reset modules to get a fresh store instance
     jest.resetModules()
 
-    // Re-import the store
+    // Re-import the mocks alongside the store so they share the same module registry
+    LocalStorage = require('local-storage')
+    Api = require('../../services/Api')
     AuthenticationStore = require('../AuthenticationStore').default
   })
 
@@ -66,8 +71,8 @@ describe('AuthenticationStore', () => {
       }
       LocalStorage.get.mockReturnValue(storedData)
 
-      // Mock Settings.Load to resolve
-      AuthenticationStore.Settings.Load = jest.fn().mockResolvedValue()
+      // Settings.Load succeeds
+      Api.ClientSettings.get.mockResolvedValue(settingsResponse)
 
       await AuthenticationStore.Initialise()
 
@@ -82,8 +87,8 @@ describe('AuthenticationStore', () => {
       }
       LocalStorage.get.mockReturnValue(storedData)
 
-      // Mock Settings.Load to reject
-      AuthenticationStore.Settings.Load = jest.fn().mockRejectedValue(new Error('Failed'))
+      // Settings.Load fails
+      Api.ClientSettings.get.mockRejectedValue(new Error('Failed'))
 
       await AuthenticationStore.Initialise()
 
@@ -195,7 +200,7 @@ describe('AuthenticationStore', () => {
         },
       })
 
-      AuthenticationStore.Settings.Load = jest.fn().mockResolvedValue()
+      Api.ClientSettings.get.mockResolvedValue(settingsResponse)
 
       const credentials = { userName: 'test@test.com', password: 'password' }
 
@@ -221,7 +226,7 @@ describe('AuthenticationStore', () => {
         },
       })
 
-      AuthenticationStore.Settings.Load = jest.fn().mockResolvedValue()
+      Api.ClientSettings.get.mockResolvedValue(settingsResponse)
 
       await new Promise((resolve) => {
         AuthenticationStore.Authenticate({
