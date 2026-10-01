@@ -1,6 +1,6 @@
 import React from 'react'
 import { inject, observer } from 'mobx-react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import ItemCreator from '../../../components/lists/ItemCreator'
 
 import UserCreatorForm from './UserCreatorForm'
@@ -33,7 +33,7 @@ class UserCreator extends React.Component {
       return (null)
 
     if (this.state.redirectTo)
-      return (<Redirect to={this.state.redirectTo} />)
+      return (<Navigate to={this.state.redirectTo} replace />)
 
     return (
       <ItemCreator typeTitle="User"

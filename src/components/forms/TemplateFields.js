@@ -55,7 +55,7 @@ class TemplateFields extends React.Component {
   }
 
   renderTemplateFields(field) {
-    var option = find(field.extra.options, { [field.extra.value ? field.extra.value : field.name]: (field.value - 0) })
+    let option = find(field.extra.options, { [field.extra.value ? field.extra.value : field.name]: (field.value - 0) })
     if (option) {
 
       return sortBy(filter(option[field.extra.fields], { IsSelected: true }), (f) => f.DisplayOrder).map((templateField, index) => {

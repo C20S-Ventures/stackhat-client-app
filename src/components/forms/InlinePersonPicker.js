@@ -18,7 +18,7 @@ export default class InlinePersonPicker extends RIEInput {
   }
 
   handleSearch = (query) => {
-    this.state.isLoading = true
+    this.setState({ isLoading: true })
     Api.Persons.query({}, { api_limit: 10, api_search_FirstName_LastName_Email_PersonKey: query })
       .then((response) => {
         this.setState({
@@ -72,8 +72,9 @@ export default class InlinePersonPicker extends RIEInput {
             onSearch={this.handleSearch}
             placeholder={searchInputPlaceholder ? searchInputPlaceholder : "Start typing name, email or id..."}
             emptyLabel="Empty..."
-            ref={(typeahead) => this.typeahead = typeahead}
             renderMenuItemChildren={(option, props) => <Highlighter search={props.text} key={option.PersonID}>{option.Label}</Highlighter>}
+            // riek (RIEStatefulBase) locates the editor via this.refs.input
+            // eslint-disable-next-line react/no-string-refs
             ref="input"
             onChange={(selected) => {
               if (selected && selected.length > 0) {
@@ -94,7 +95,7 @@ export default class InlinePersonPicker extends RIEInput {
     let { value } = this.props    
     return <span className="inline-editable-wrapper" title="Edit">
       <span className="inline-editable">
-        <span tabIndex="0"
+        <span tabIndex="0" role="button"
           className={this.makeClassString()}
           onFocus={this.startEditing}
           onClick={this.startEditing}

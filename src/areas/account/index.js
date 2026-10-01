@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Redirect, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import Content from '../../components/Content'
 import { SubNavArea, SubNav, NavLinkItem } from '../../components/navigation'
@@ -8,7 +8,7 @@ import Details from './Details'
 import Password from './Password'
 import Preferences from './Preferences'
 
-const Account = ({ match, location }) => {
+const Account = () => {
 
   return (
     <div className="account">
@@ -20,12 +20,12 @@ const Account = ({ match, location }) => {
         </SubNav>
       </SubNavArea>
       <Content>
-        <Switch>
-          <Redirect exact from={`${match.url}`} to={`${match.url}/details/`} />
-          <Route exact path='/account/details/' component={Details} />
-          <Route exact path='/account/password/' component={Password} />
-          <Route exact path='/account/preferences/' component={Preferences} />
-        </Switch>
+        <Routes>
+          <Route index element={<Navigate to="details/" replace />} />
+          <Route path='details' element={<Details />} />
+          <Route path='password' element={<Password />} />
+          <Route path='preferences' element={<Preferences />} />
+        </Routes>
       </Content>
     </div>
   )

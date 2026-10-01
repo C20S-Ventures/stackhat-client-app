@@ -35,7 +35,7 @@ class ItemEditor extends Component {
     this.setState({ isLoading: true }, () => {
       this.props.editStore.Update(this.props.editID, data)
         .then((item) => {
-          extend(target, item)
+          if (this.props.item) extend(this.props.item, item)
           this.setState({ isLoading: false })
         })
     })

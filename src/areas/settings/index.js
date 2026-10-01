@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Redirect, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import Content from '../../components/Content'
 import { SubNavArea, SubNav } from '../../components/navigation'
@@ -10,7 +10,7 @@ import Users from './Users'
 import Theme from './Theme'
 import ExternalIdentity from './ExternalIdentity'
 
-const Settings = ({ match }) => (
+const Settings = () => (
 
   <div>
     <SubNavArea>
@@ -23,14 +23,14 @@ const Settings = ({ match }) => (
     </SubNavArea>
 
     <Content>
-      <Switch>
-        <Redirect exact from={`${match.url}`} to={`${match.url}/dashboard/`} />
-        <Route exact path='/settings/dashboard/*' component={Dashboard} />
-        <Route exact path='/settings/users/' component={Users} />
-        <Route exact path='/settings/users/:id' component={Users} />
-        <Route exact path='/settings/theme/' component={Theme} />
-        <Route exact path='/settings/external-identity/' component={ExternalIdentity} />
-      </Switch>
+      <Routes>
+        <Route index element={<Navigate to="dashboard/" replace />} />
+        <Route path='dashboard/*' element={<Dashboard />} />
+        <Route path='users' element={<Users />} />
+        <Route path='users/:id' element={<Users />} />
+        <Route path='theme' element={<Theme />} />
+        <Route path='external-identity' element={<ExternalIdentity />} />
+      </Routes>
     </Content>
   </div>
 

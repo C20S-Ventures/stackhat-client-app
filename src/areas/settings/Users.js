@@ -5,6 +5,7 @@ import { Grid, Row, Col, Panel } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 import { ItemList } from '../../components/lists'
 import { UserCreator, UserEditor } from './users'
+import withRouter from '../../components/routing/withRouter'
 
 class Users extends React.Component {
 
@@ -78,4 +79,4 @@ class Users extends React.Component {
 
 }
 
-export default inject("AdminAppUserStore", "Settings")(observer(Users))
+export default withRouter(inject("AdminAppUserStore", "Settings")(observer(Users)))

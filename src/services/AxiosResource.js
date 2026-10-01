@@ -138,7 +138,7 @@ class Resource {
     if (result && result.Items) {
       this.convertDates(result.Items);
       try { result.Items.$_total = result.Total; }
-      catch (ex) { }
+      catch (ex) { /* Items may be frozen; total is optional */ }
       return result.Items;
     }
     else {
@@ -149,8 +149,8 @@ class Resource {
   transformWriteRequest = (data, headers) => {
     let result = data
     if (this.config.writeStripArrayAndCommonProps) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property) && (
+      for (let property in data) {
+        if (Object.prototype.hasOwnProperty.call(data, property) && (
           Array.isArray(data[property]) // array / navigation property
           || commonProps.indexOf(property) > -1) // common props
         ) {
@@ -163,11 +163,11 @@ class Resource {
   }
 
   convertDates(obj) {
-    for (var key in obj) {
-      if (!obj.hasOwnProperty(key)) continue;
+    for (let key in obj) {
+      if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
 
-      var value = obj[key];
-      var typeofValue = typeof (value);
+      let value = obj[key];
+      let typeofValue = typeof (value);
 
       if (typeofValue === 'object') {
         // If it is an object, check within the object for dates.

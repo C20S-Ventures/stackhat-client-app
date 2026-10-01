@@ -18,7 +18,7 @@ class UserCreatorForm {
 
     this.formInfo = {
       plugins: {
-        dvr: dvr(ValidatorJS)
+        dvr: dvr({ package: ValidatorJS })
       },
       hooks: {
         onSuccess: (form) => {

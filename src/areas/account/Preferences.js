@@ -52,7 +52,7 @@ class Preferences extends React.Component {
   componentDidMount() {
     let { CaseStudyTemplateStore, NarrativeTemplateStore, ResearchIdeaTemplateStore } = this.props
 
-    var requests = []
+    let requests = []
 
     requests.push(CaseStudyTemplateStore.Load())
     requests.push(NarrativeTemplateStore.Load())

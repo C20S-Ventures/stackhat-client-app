@@ -47,8 +47,12 @@ class InlineDatePicker extends RIEInput {
           }}
           onBlur={() => this.cancelEditing()}
           onKeyDown={this.keyDown}
+          // riek (RIEStatefulBase) locates the editor via this.refs.input
+          // eslint-disable-next-line react/no-string-refs
           ref="input"
           calendarPlacement="bottom"
+          // the picker only renders after the user activates the field, so focusing it is expected
+          // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus={true}
           {...this.props.editProps}
         />
@@ -63,6 +67,7 @@ class InlineDatePicker extends RIEInput {
         <span className="inline-editable">
           <span
             tabIndex="0"
+            role="button"
             className={this.makeClassString()}
             onFocus={this.startEditing}
             onClick={this.startEditing}

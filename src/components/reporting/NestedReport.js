@@ -1,6 +1,6 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import { decorate, observable, runInAction } from 'mobx'
+import { makeObservable, observable, runInAction } from 'mobx'
 import ReactResizeDetector from 'react-resize-detector'
 import Api from '../../services/Api'
 import ReportImage from './ReportImage'
@@ -10,6 +10,15 @@ class NestedReport extends React.Component {
   size = { width: 0 }
   isLoading = true
   chart = null
+
+  constructor(props) {
+    super(props)
+    makeObservable(this, {
+      chart: observable,
+      isLoading: observable,
+      size: observable,
+    })
+  }
 
   componentDidMount() {
     Api.Reports.query({}, { UniqueID: this.props.uid })
@@ -28,7 +37,7 @@ class NestedReport extends React.Component {
   render() {
 
     // missing chart?
-    var heading = this.isLoading ? "Loading..." 
+    let heading = this.isLoading ? "Loading..." 
       : (this.chart ? this.chart.Name : `Error: Unknown Chart '${this.props.uid}'`)
 
     return (
@@ -43,10 +52,5 @@ class NestedReport extends React.Component {
   }
 }
 
-decorate(NestedReport, {
-  chart: observable,
-  isLoading: observable,
-  size: observable
-})
 
 export default observer(NestedReport)

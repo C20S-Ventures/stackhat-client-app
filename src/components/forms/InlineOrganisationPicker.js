@@ -20,13 +20,13 @@ export default class InlineOrganisationPicker extends RIEInput {
     if (this.cancelToken) {
       // cancel any existing request     
       try { this.cancelToken.cancel("Request no longer relevant.") }
-      catch (e) { }
+      catch (e) { /* request already cancelled */ }
     }
 
     // create new cancel token
     this.cancelToken = Api.GetCancelToken()        
 
-    this.state.isLoading = true
+    this.setState({ isLoading: true })
     Api.Organisations.query({}, { api_limit: 10, api_search_Name: query }, this.cancelToken.token)
       .then((response) => {
         this.setState({
@@ -63,10 +63,11 @@ export default class InlineOrganisationPicker extends RIEInput {
           onSearch={this.handleSearch}
           placeholder="Start typing organisation name..."
           emptyLabel="Empty..."
-          ref={(typeahead) => this.typeahead = typeahead}
           // renderMenuItemChildren={(option, props) => (
           //   <Highlighter search={props.text} key={option.OrganisationID}>{option.Name}</Highlighter>
           // )}
+          // riek (RIEStatefulBase) locates the editor via this.refs.input
+          // eslint-disable-next-line react/no-string-refs
           ref="input"
           onChange={(selected) => {
             if (selected && selected.length > 0) {
@@ -87,7 +88,7 @@ export default class InlineOrganisationPicker extends RIEInput {
     return (
       <div className="inline-editable-wrapper" title="Edit">
         <span className="inline-editable">
-          <span tabIndex="0"
+          <span tabIndex="0" role="button"
             className={this.makeClassString()}
             onFocus={this.startEditing}
             onClick={this.startEditing}

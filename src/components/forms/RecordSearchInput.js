@@ -17,13 +17,13 @@ class RecordSearchInput extends React.Component {
     if (this.cancelToken) {
       // cancel any existing request     
       try { this.cancelToken.cancel("Request no longer relevant.") }
-      catch (e) { }
+      catch (e) { /* request already cancelled */ }
     }
 
     // create new cancel token
     this.cancelToken = Api.GetCancelToken()      
 
-    this.state.isLoading = true
+    this.setState({ isLoading: true })
     Api[config.apiSourceSet].query({}, { api_limit: 10, [`api_search_${config.searchKey}`]: query, ...config.apiParams }, this.cancelToken.token)
       .then((response) => {
         this.setState({
@@ -52,7 +52,7 @@ class RecordSearchInput extends React.Component {
         if (response && config.onAfterCreate)
           config.onAfterCreate(response)
       })
-    typeahead.getInstance().clear()
+    typeahead.clear()
   }
 
   render() {

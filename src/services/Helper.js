@@ -41,7 +41,7 @@ class Helper {
 ///////////////////////////////////
 
 function toggle(elem, array, shadowElem, shadowArray) {
-  var i = inArray(elem, array);
+  let i = inArray(elem, array);
   if (i === -1) {
     array.push(elem);
     if (shadowElem && shadowArray)
@@ -61,7 +61,7 @@ function inArray(elem, array) {
   if (array.indexOf) {
     return array.indexOf(elem);
   }
-  for (var i = 0, length = array.length; i < length; i++) {
+  for (let i = 0, length = array.length; i < length; i++) {
     if (array[i] === elem) {
       return i;
     }
@@ -71,7 +71,7 @@ function inArray(elem, array) {
 
 function getById(list, idName, id, index) {
   if (list.length > 0) {
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
       if (list[i][idName] == id) {
         index = i;
         return list[i];
@@ -82,7 +82,7 @@ function getById(list, idName, id, index) {
 
 function getByIdDetail(list, idName, id) {
   if (list.length > 0) {
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
       if (list[i][idName] == id) {
         return {
           index: i,
@@ -94,9 +94,9 @@ function getByIdDetail(list, idName, id) {
 }
 
 function getByIds(list, idName, ids) {
-  var result = [];
+  let result = [];
   if (list.length > 0) {
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
       if (ids.indexOf(list[i][idName]) > -1) {
         result.push(list[i]);
       }
@@ -106,9 +106,9 @@ function getByIds(list, idName, ids) {
 }
 
 function getIds(list, idName) {
-  var result = [];
+  let result = [];
   if (list.length > 0) {
-    for (var i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i++) {
       result.push(list[i][idName]);
     }
   }
@@ -176,7 +176,7 @@ function isNullOrWhitespace(s) {
 }
 
 function stringIsNumber(s) {
-  var x = +s; // made cast obvious for demonstration
+  let x = +s; // made cast obvious for demonstration
   return x.toString() === s;
 }
 
@@ -192,8 +192,8 @@ function stringIsNumber(s) {
  */
 function getProperty(propPath, obj) {
   if (!obj || !propPath || !Array.isArray(propPath)) return null;
-  var result = Object.assign({}, obj);
-  for (var i = 0; i < propPath.length; i++) {
+  let result = Object.assign({}, obj);
+  for (let i = 0; i < propPath.length; i++) {
     if (result[propPath[i]] === undefined)
       return null;
     else {
@@ -208,11 +208,11 @@ function getProperty(propPath, obj) {
 ///////////////////////////////////
 
 function toBlob(data, isBase64) {
-  var chars = "";
+  let chars = "";
   if (isBase64) chars = atob(data); else chars = data;
-  var bytes = new Array(chars.length);
-  for (var i = 0; i < chars.length; i++) bytes[i] = chars.charCodeAt(i);
-  var blob = new Blob([new Uint8Array(bytes)]);
+  let bytes = new Array(chars.length);
+  for (let i = 0; i < chars.length; i++) bytes[i] = chars.charCodeAt(i);
+  let blob = new Blob([new Uint8Array(bytes)]);
   return blob;
 }
 

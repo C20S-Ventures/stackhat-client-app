@@ -2,7 +2,7 @@ import { RunWithOidcClient, OidcAuthenticationContext } from './services/oidc'
 import QueryString from 'query-string'
 import Axios from 'axios'
 import Config from 'react-global-configuration'
-import Configure from './config'
+import './config'
 
 let hash = QueryString.parse(location.hash)
 if (hash.mode === "sso") {

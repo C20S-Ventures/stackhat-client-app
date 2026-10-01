@@ -1,5 +1,5 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { Panel } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 import { observer } from 'mobx-react'
@@ -91,7 +91,7 @@ class ItemEditorNeo extends React.Component {
   render() {
 
     if (this.state.redirectTo)
-      return (<Redirect to={this.state.redirectTo} />)
+      return (<Navigate to={this.state.redirectTo} replace />)
 
     let { propNames, propSizes, store, edit, collapsible } = this.props
     let collapsed = typeof collapsible === "object" ? collapsible.collapsed : this.state.collapsed

@@ -18,13 +18,13 @@ class OrganisationPicker extends React.Component {
     if (this.cancelToken) {
       // cancel any existing request     
       try { this.cancelToken.cancel("Request no longer relevant.") }
-      catch (e) { }
+      catch (e) { /* request already cancelled */ }
     }
 
     // create new cancel token
     this.cancelToken = Api.GetCancelToken()    
 
-    this.state.isLoading = true
+    this.setState({ isLoading: true })
     Api.Persons.query({}, { api_limit: 10, api_search_FirstName_LastName_Email_PersonKey: query }, this.cancelToken.token)
       .then((response) => {
         this.setState({
@@ -55,7 +55,7 @@ class OrganisationPicker extends React.Component {
           ref={(typeahead) => this.typeahead = typeahead}
           renderMenuItemChildren={(option, props) => <Highlighter search={props.text} key={option.PersonID}>{option.Label}</Highlighter>}
           onChange={(selected) => {
-            var typeahead = this.typeahead      
+            let typeahead = this.typeahead      
             if (selected && selected.length > 0) {
               let sel = selected[0]
               if (sel.customOption && this.props.createNew) {
@@ -71,15 +71,15 @@ class OrganisationPicker extends React.Component {
                 //   })
                 // }
 
-                typeahead.getInstance().clear()                                  
+                typeahead.clear()                                  
               } else {
                 field.set(selected[0])
-                typeahead.getInstance().clear()
+                typeahead.clear()
               }
             }
           }}
           onBlur={(e) => {
-            this.typeahead.getInstance().clear()
+            this.typeahead.clear()
           }}
         />}
         {field.value && !field.value.customOption && field.value.PersonID !== 0 && this.renderSelected(field)}
@@ -94,7 +94,7 @@ class OrganisationPicker extends React.Component {
     return (
       <div className="tagsinput__tags">
         <Label className="tagsinput-tag" title={field.value.Name}>
-          <a className="pull-right" onClick={() => field.clear()} />
+          <a className="pull-right" role="button" tabIndex="0" onClick={() => field.clear()}><span className="sr-only">Remove</span></a>
           <span className="tagsinput-tag__text">
             {field.value.FirstName} {field.value.LastName} {field.value.Email}
           </span>
@@ -108,7 +108,7 @@ class OrganisationPicker extends React.Component {
 //     return (
 //       <div className="tagsinput__tags">
 //         <Label className="tagsinput-tag" title={field.value.Name}>
-//           <a className="pull-right" onClick={() => field.clear()} />
+//           <a className="pull-right" role="button" tabIndex="0" onClick={() => field.clear()}><span className="sr-only">Remove</span></a>
 //           <span className="tagsinput-tag__text">
 //             (New Organisation) <em>{field.value.Name}</em>
 //           </span>

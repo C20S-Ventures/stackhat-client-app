@@ -1,17 +1,13 @@
 import React from 'react'
-import { inject } from 'mobx-react'
-import { Switch, Redirect, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
 import Content from '../../components/Content'
-import { SubNavArea, SubNav } from '../../components/navigation'
+import { SubNav } from '../../components/navigation'
 import NavLinkItem from '../../components/navigation/NavLinkItem'
 
 import Home from './Home'
 
-const index = ({ match, location, Authentication }) => {
-
-  // determine fallback redirect
-  let redirect = `${match.url}/home/`
+const Dashboard = () => {
 
   return (
     <div className={"activity"}>
@@ -19,14 +15,13 @@ const index = ({ match, location, Authentication }) => {
         <NavLinkItem to="/dashboard/home/" text="My Dashboard" icon="tachometer-alt" />
       </SubNav>
       <Content full={true}>
-        <Switch>
-          <Redirect exact from={`${match.url}`} to={redirect} />
-
-          <Route exact path='/dashboard/home/*' component={Home} />
-        </Switch>
+        <Routes>
+          <Route index element={<Navigate to="home/" replace />} />
+          <Route path='home/*' element={<Home />} />
+        </Routes>
       </Content>
     </div>
   )
 }
 
-export default inject("Authentication")(index)
+export default Dashboard

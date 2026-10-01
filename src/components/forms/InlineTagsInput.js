@@ -68,6 +68,8 @@ class InlineTagsInput extends RIEInput {
     let config = this.props.editConfig
 
     return (
+      // riek (RIEStatefulBase) locates the editor via this.refs.input
+      // eslint-disable-next-line react/no-string-refs
       <span className="inline-editable-wrapper inline-tags-input" ref="input">
         <AsyncTypeahead
           disabled={false}
@@ -101,7 +103,7 @@ class InlineTagsInput extends RIEInput {
                   values: [...this.state.values, selected[0]]
                 })
               }
-              this.typeahead.getInstance().clear()
+              this.typeahead.clear()
             }
           }}
 
@@ -118,7 +120,7 @@ class InlineTagsInput extends RIEInput {
     return val.map((value, index) => {
       return (
         <Label key={index} className="tagsinput-tag" title={this.props.selectedTitleResolver ? this.props.selectedTitleResolver(value) : null}>
-          <a className="pull-right" onClick={() => this.removeTag(index)} />
+          <a className="pull-right" role="button" tabIndex="0" onClick={() => this.removeTag(index)}><span className="sr-only">Remove</span></a>
           <span className="tagsinput-tag__text">
             {this.props.textResolver ? this.props.textResolver(value) : value[this.props.labelKey]}
           </span>
@@ -136,7 +138,7 @@ class InlineTagsInput extends RIEInput {
         onFocus={(e) => (editable ? this.startEditing(e) : null)}
         onClick={(e) => (editable ? this.startEditing(e) : null)}>
         <div className={editable ? "inline-editable" : ""}>
-          <div tabIndex="0"
+          <div tabIndex="0" role="button"
             className={this.makeClassString()}
             {...this.props.defaultProps}>
             {(val && val.length) ?

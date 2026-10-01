@@ -13,7 +13,7 @@ class IndustryOrganisationPicker extends React.Component {
   }
 
   handleSearch = (query) => {
-    this.state.isLoading = true
+    this.setState({ isLoading: true })
     Api.IndustryOrganisationNames.query({}, { api_limit: 10, api_search_Name: query })
       .then((response) => {
         this.setState({
@@ -44,7 +44,7 @@ class IndustryOrganisationPicker extends React.Component {
             <Highlighter search={props.text} key={option.IndustryOrganisationID}>{option.Name}</Highlighter>
           )}
           onChange={(selected) => {
-            var typeahead = this.typeahead
+            let typeahead = this.typeahead
             if (selected && selected.length > 0) {
               let sel = selected[0]
               if (sel.customOption && this.props.createNew) {
@@ -60,15 +60,15 @@ class IndustryOrganisationPicker extends React.Component {
                   })
                 }
 
-                typeahead.getInstance().clear()                                  
+                typeahead.clear()                                  
               } else {
                 field.value = selected[0]
-                typeahead.getInstance().clear()
+                typeahead.clear()
               }
             }
           }}
           onBlur={(e) => {
-            this.typeahead.getInstance().clear()
+            this.typeahead.clear()
           }}
         />}
         {field.value && field.value.IndustryOrganisationID && this.renderSelected(field)}
@@ -82,7 +82,7 @@ class IndustryOrganisationPicker extends React.Component {
     return (
       <div className="tagsinput__tags">
         <Label className="tagsinput-tag" title={field.value.Name}>
-          <a className="pull-right" onClick={() => field.clear()} />
+          <a className="pull-right" role="button" tabIndex="0" onClick={() => field.clear()}><span className="sr-only">Remove</span></a>
           <span className="tagsinput-tag__text">
             {field.value.Name}
           </span>
