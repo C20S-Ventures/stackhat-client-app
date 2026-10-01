@@ -1,7 +1,7 @@
 # StackHat Client App - Comprehensive TODO
 
 **Generated from Audit Report:** December 28, 2025
-**Total Items:** 127 tasks across 8 categories
+**Total Items:** 116 tasks across 8 categories
 
 ---
 
@@ -20,13 +20,15 @@
   - Fix known CVEs including prototype pollution
   - Update any breaking API changes
 
-- [ ] **SEC-003**: Remove or secure jQuery CDN dependency
+- [x] **SEC-003**: Remove or secure jQuery CDN dependency ✅
+  - _Done: jQuery 3.7.1 is now bundled from npm via webpack ProvidePlugin; CDN script removed from index.html_
   - File: `src/index.html:17`
   - Option A: Bundle jQuery locally via npm
   - Option B: Remove jQuery entirely (update react-bootstrap-slider)
   - Update to jQuery 3.7.x if keeping
 
-- [ ] **SEC-004**: Remove axios-progress-bar CDN link (rawgit.com deprecated)
+- [x] **SEC-004**: Remove axios-progress-bar CDN link (rawgit.com deprecated) ✅
+  - _Done: axios-progress-bar installed from npm; nprogress styles bundled locally (src/styles/nprogress.scss)_
   - File: `src/index.html:14`
   - Install via npm: `npm install axios-progress-bar`
   - Import CSS in main SCSS file
@@ -133,12 +135,14 @@
   - Update entry point imports
   - Configure @babel/preset-env for polyfills
 
-- [ ] **DEP-005**: Replace node-sass with dart-sass
+- [x] **DEP-005**: Replace node-sass with dart-sass ✅
+  - _Done: node-sass replaced by sass (Dart Sass); known Bootstrap 3 deprecation noise silenced in sass-loader_
   - `npm uninstall node-sass`
   - `npm install sass`
   - Update webpack config if needed
 
 - [ ] **DEP-006**: Update mobx-react-form
+  - _Status: upgraded to v6 and the DVR plugin calls fixed to the v6 `dvr({ package })` shape; the package is now deprecated in favour of `mobx-formkit`, so migration is still open_
   - Check compatibility with MobX 6
   - Update or replace if unmaintained
 
@@ -212,28 +216,31 @@
   - Add: `"lint": "eslint src/"`
   - Add: `"lint:fix": "eslint src/ --fix"`
 
-- [ ] **LINT-006**: Fix all ESLint errors in codebase
+- [x] **LINT-006**: Fix all ESLint errors in codebase ✅
+  - _Done: 0 errors. ~950 warnings remain (mostly prop-types, unused vars, a11y click handlers) and are left as warn-level for incremental cleanup_
   - Run lint and fix issues incrementally
 
 ### Testing - Authentication Flow
 
 - [ ] **TEST-009**: Test AuthenticationStore.Initialise()
+  - _Status: covered: no stored data, valid stored data, Settings.Load failure. Missing: expired/invalid stored data_
   - Test with no stored data
   - Test with valid stored auth data
   - Test with expired/invalid stored data
 
 - [ ] **TEST-010**: Test AuthenticationStore.Authenticate()
+  - _Status: covered: successful password login, failed login. Missing: SSO login and settings-load failure after login_
   - Test successful password login
   - Test successful SSO login
   - Test failed login scenarios
   - Test error handling
 
-- [ ] **TEST-011**: Test AuthenticationStore.SignOut()
+- [x] **TEST-011**: Test AuthenticationStore.SignOut() ✅
   - Test localStorage clearing
   - Test state reset
   - Test callback execution
 
-- [ ] **TEST-012**: Test AuthenticationStore.IsInRole()
+- [x] **TEST-012**: Test AuthenticationStore.IsInRole() ✅
   - Test with matching role
   - Test with non-matching role
   - Test case insensitivity
@@ -245,26 +252,29 @@
 ### Testing - API Layer
 
 - [ ] **TEST-014**: Test AxiosResource.get()
+  - _Status: covered: successful get (single and all). Missing: error handling_
   - Mock Axios responses
   - Test successful get
   - Test error handling
 
 - [ ] **TEST-015**: Test AxiosResource.create()
+  - _Status: covered: successful create. Missing: write-transform assertions on the create path_
   - Test successful create
   - Test data transformation
 
-- [ ] **TEST-016**: Test AxiosResource.update()
+- [x] **TEST-016**: Test AxiosResource.update() ✅
   - Test successful update
   - Test partial updates
 
-- [ ] **TEST-017**: Test AxiosResource.delete()
+- [x] **TEST-017**: Test AxiosResource.delete() ✅
   - Test successful delete
 
-- [ ] **TEST-018**: Test AxiosResource.query()
+- [x] **TEST-018**: Test AxiosResource.query() ✅
   - Test with parameters
   - Test response transformation
 
 - [ ] **TEST-019**: Test date conversion in AxiosResource
+  - _Status: covered: ISO string conversion and non-date passthrough. Missing: nested objects_
   - Test ISO date string conversion
   - Test nested object date conversion
 
@@ -298,50 +308,55 @@
 
 ### Build System - Webpack 5
 
-- [ ] **BUILD-001**: Update Webpack from 4 to 5
+- [x] **BUILD-001**: Update Webpack from 4 to 5 ✅
   - `npm install webpack@5 webpack-cli@4 webpack-dev-server@4`
 
-- [ ] **BUILD-002**: Remove deprecated plugins
+- [x] **BUILD-002**: Remove deprecated plugins ✅
   - Remove `extract-text-webpack-plugin`
   - Replace with `mini-css-extract-plugin`
 
-- [ ] **BUILD-003**: Update webpack configuration for v5
+- [x] **BUILD-003**: Update webpack configuration for v5 ✅
   - Update module rules syntax
   - Update plugin configurations
   - Enable asset modules (replaces file-loader, url-loader)
 
-- [ ] **BUILD-004**: Replace uglifyjs-webpack-plugin
+- [x] **BUILD-004**: Replace uglifyjs-webpack-plugin ✅
   - Webpack 5 includes terser by default
   - Remove explicit uglifyjs-webpack-plugin
 
-- [ ] **BUILD-005**: Enable webpack 5 caching
+- [x] **BUILD-005**: Enable webpack 5 caching ✅
   - Configure filesystem cache
   - Verify build speed improvement
 
 - [ ] **BUILD-006**: Consolidate webpack configs
+  - _Status: scripts now use webpack.prod.config.js and webpack.prodtemp.config.js is a re-export shim; base and prod configs still duplicate rules (webpack-merge is installed but unused)_
   - Rename `webpack.prodtemp.config.js` to `webpack.prod.config.js`
   - Remove or document purpose of other configs
   - Use webpack-merge for shared configuration
 
 ### Router Update
 
-- [ ] **ROUTE-001**: Update react-router-dom from 4.x to 6.x
+- [x] **ROUTE-001**: Update react-router-dom from 4.x to 6.x ✅
   - `npm install react-router-dom@6`
 
-- [ ] **ROUTE-002**: Update route syntax
+- [x] **ROUTE-002**: Update route syntax ✅
+  - _Done: all route trees (Master, dashboard, account, settings) use nested <Routes>/<Route element>_
   - Replace `<Switch>` with `<Routes>`
   - Update `<Route>` component prop to element
   - Update nested routes syntax
 
-- [ ] **ROUTE-003**: Update PrivateRoute for v6
+- [x] **ROUTE-003**: Update PrivateRoute for v6 ✅
+  - _Done: PrivateRoute wraps children and redirects with <Navigate replace state={{ from }}>_
   - Rewrite using new patterns
   - Use `<Outlet>` for nested routes
 
-- [ ] **ROUTE-004**: Update navigation patterns
+- [x] **ROUTE-004**: Update navigation patterns ✅
+  - _Done: every <Redirect> replaced with <Navigate replace>_
   - Replace `<Redirect>` with `<Navigate>`
   - Update programmatic navigation
 
-- [ ] **ROUTE-005**: Update useHistory to useNavigate
+- [x] **ROUTE-005**: Update useHistory to useNavigate ✅
+  - _Done: no useHistory usages remain; class components needing match/navigate use the withRouter shim in src/components/routing/withRouter.js_
   - Search for all useHistory usages
   - Replace with useNavigate hook
 
@@ -372,32 +387,34 @@
 
 ### CI/CD Pipeline
 
-- [ ] **CICD-001**: Update vsts-ci.yml to use modern image
+- [x] **CICD-001**: Update vsts-ci.yml to use modern image ✅
+  - _Done: vsts-ci.yml replaced by .github/workflows/ci.yml on ubuntu-latest_
   - Replace Ubuntu 16.04 with ubuntu-latest
 
-- [ ] **CICD-002**: Add Node.js setup step
+- [x] **CICD-002**: Add Node.js setup step ✅
+  - _Done: Node version comes from .nvmrc (22)_
   - Use actions/setup-node
   - Specify Node.js version
 
-- [ ] **CICD-003**: Add npm install step
+- [x] **CICD-003**: Add npm install step ✅
   - Cache node_modules for faster builds
 
-- [ ] **CICD-004**: Add linting step
+- [x] **CICD-004**: Add linting step ✅
   - Run ESLint on PR
 
-- [ ] **CICD-005**: Add test step
+- [x] **CICD-005**: Add test step ✅
   - Run Jest tests
   - Fail build on test failure
 
-- [ ] **CICD-006**: Add build step
+- [x] **CICD-006**: Add build step ✅
   - Run production build
   - Verify build succeeds
 
-- [ ] **CICD-007**: Add coverage reporting
+- [x] **CICD-007**: Add coverage reporting ✅
   - Generate coverage report
   - Upload to coverage service (Codecov, etc.)
 
-- [ ] **CICD-008**: Add security scanning
+- [x] **CICD-008**: Add security scanning ✅
   - Add npm audit step
   - Consider Snyk or similar
 
@@ -475,7 +492,8 @@
 
 ### Documentation
 
-- [ ] **DOC-001**: Update package.json metadata
+- [x] **DOC-001**: Update package.json metadata ✅
+  - _Done: repository URL, description, and author updated_
   - Fix repository URL (currently points to boilerplate)
   - Update description
   - Add author information
@@ -489,7 +507,8 @@
   - Document security policy
   - Add vulnerability reporting process
 
-- [ ] **DOC-004**: Update README.md
+- [x] **DOC-004**: Update README.md ✅
+  - _Done: setup, scripts, structure, and a Known Gaps section_
   - Add project description
   - Add setup instructions
   - Add available scripts
@@ -596,11 +615,33 @@
 
 | Category | Total | Completed | Remaining |
 |----------|-------|-----------|-----------|
-| P0 - Critical | 22 | 15 | 7 |
-| P1 - High | 41 | 15 | 26 |
-| P2 - Medium | 43 | 0 | 43 |
-| P3 - Low | 21 | 0 | 21 |
-| **Total** | **127** | **30** | **97** |
+| P0 - Critical | 20 | 17 | 3 |
+| P1 - High | 29 | 22 | 7 |
+| P2 - Medium | 43 | 18 | 25 |
+| P3 - Low | 24 | 2 | 22 |
+| **Total** | **116** | **59** | **57** |
+
+### Verification (October 1, 2026)
+
+Run from a clean `npm ci` on Node 22:
+
+- `npm run lint`: 0 errors (953 warnings)
+- `npm test -- --coverage`: 75/75 tests pass; coverage ratchet set just below the current ~10%
+- `npm run prod`: builds; only bundle-size advisories remain (see PERF-001..PERF-005)
+- Browser smoke test (Chromium, API stubbed): login page renders, protected routes redirect anonymous
+  users to `/`, logout works, and with a stubbed `ClientSettings` response the dashboard renders for a
+  restored session.
+
+### Pre-existing Gaps (present since the initial commit, not modernization regressions)
+
+- [ ] **GAP-001**: Add `Api.ClientSettings` (called by `ClientSettingStore.Load()` but never defined).
+  Without it, every login and session restore fails and signs the user out.
+- [ ] **GAP-002**: Supply the stores that the account and settings screens inject (`AppUserStore`,
+  `UserClassificationStore`, `UserTagStore`, `ResourceStore`, `CaseStudyTemplateStore`,
+  `NarrativeTemplateStore`, `ResearchIdeaTemplateStore`, `AdminAppUserStore`, `SearcherStore`) and register
+  them in `indexApp.js` (currently `new Stores([])`).
+- [ ] **GAP-003**: Replace `riek` (React 15-era; relies on string refs and `findDOMNode`, both removed in React 19).
+- [ ] **GAP-004**: Wire the settings area into `Master.js` routing once its stores exist (it is not routed today).
 
 ### Sprint Planning Reference
 
@@ -628,4 +669,4 @@
 
 ---
 
-*Last Updated: December 29, 2025*
+*Last Updated: October 1, 2026*

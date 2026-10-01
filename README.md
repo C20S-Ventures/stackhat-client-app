@@ -27,8 +27,8 @@ A React-based single-page application (SPA) for the StackHat platform, featuring
 
 ### Prerequisites
 
-- Node.js 18+
-- npm 8+
+- Node.js 22 (see `.nvmrc`; `nvm use` picks it up). Dart Sass requires Node 20.19+.
+- npm 10+
 
 ### Installation
 
@@ -40,6 +40,10 @@ cd stackhat-client-app
 # Install dependencies
 npm install
 ```
+
+> `.npmrc` sets `legacy-peer-deps=true`. Several legacy UI packages (react-adal, react-bootstrap 0.33,
+> riek, react-bootstrap-switch, react-nvd3) still declare React ≤17 peer ranges; they run on React 18,
+> but npm will not resolve the tree without this flag. Remove it once those packages are replaced.
 
 ### Development
 
@@ -108,6 +112,21 @@ src/
 ├── config/             # Environment configurations
 └── assets/             # Static assets
 ```
+
+## Known Gaps
+
+This repository appears to be extracted from a larger application. Some code references pieces that
+were never included, so these screens cannot work until they are supplied:
+
+- `Api.ClientSettings` is called by `ClientSettingStore.Load()` on every login and session restore but is
+  not defined in `src/services/Api.js`. Until the endpoint is added, authenticated users are signed out
+  immediately after login.
+- Stores injected by the account and settings screens (`AppUserStore`, `UserClassificationStore`,
+  `UserTagStore`, `ResourceStore`, `CaseStudyTemplateStore`, `NarrativeTemplateStore`,
+  `ResearchIdeaTemplateStore`, `AdminAppUserStore`, `SearcherStore`) do not exist, and `indexApp.js`
+  registers no stores. The `/account/*` pages throw "Store … is not available" until they are added.
+
+See `TODO.md` for the full backlog.
 
 ## Configuration
 
