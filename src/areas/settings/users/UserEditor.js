@@ -146,9 +146,9 @@ class UserEditor extends React.Component {
           {Admin &&
             <ItemEditorSection>
               <h4>Administrator &gt; AOU Access</h4>
-              <p>By default Administator role users have access to records for all AOU's. To configure specific Administrator AOU access specify the AOU's here.
-                Note if AOU restrictions are added here, this does not include the Administrator's primary AOU configured above. If they need access to
-              this AOU you must also select it here. If no AOU's are selected, the Administrator will have access to all AOU's.</p>
+              <p>By default Administator role users have access to records for all AOU&apos;s. To configure specific Administrator AOU access specify the AOU&apos;s here.
+                Note if AOU restrictions are added here, this does not include the Administrator&apos;s primary AOU configured above. If they need access to
+              this AOU you must also select it here. If no AOU&apos;s are selected, the Administrator will have access to all AOU&apos;s.</p>
               <br />
               <InlineMultiOrganisationUnitPicker id={item.AppUserID} editable={true} store={AdminAppUserStore} />
             </ItemEditorSection>}

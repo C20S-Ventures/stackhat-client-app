@@ -2,9 +2,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const WebpackAutoInject = require('webpack-auto-inject-version');
+const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
+
+// Bootstrap 3 Sass predates current Dart Sass; silence its known deprecations so real problems stay visible
+const sassLoader = {
+  loader: 'sass-loader',
+  options: {
+    sassOptions: {
+      quietDeps: true,
+      silenceDeprecations: ['legacy-js-api', 'import', 'global-builtin', 'color-functions', 'slash-div'],
+    },
+  },
+};
 
 const packageJson = require('../package.json');
 
@@ -16,11 +27,6 @@ function buildVersion(buffer) {
 
 module.exports = {
   mode: 'production',
-
-  // Exclude jquery for react slider dep
-  externals: {
-    jquery: 'jQuery'
-  },
 
   entry: ['./src/index.js'],
 
@@ -42,11 +48,11 @@ module.exports = {
       {
         test: /\.scss$/,
         exclude: /Print\.scss/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', sassLoader]
       },
       {
         test: /Print\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader', sassLoader]
       },
       {
         test: /\.css$/,
@@ -100,14 +106,25 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'style.[contenthash].css',
     }),
-    new WebpackAutoInject({}),
+    // jQuery is bundled from npm (needed by bootstrap-slider) rather than loaded from a CDN
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+    }),
+    new webpack.DefinePlugin({
+      __APP_VERSION__: JSON.stringify(require('../package.json').version),
+    }),
   ],
 
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
     alias: {
       '@': path.resolve(__dirname, '../src'),
-    }
+    },
+    // Webpack 5 no longer polyfills Node core modules
+    fallback: {
+      buffer: require.resolve('buffer/'),
+    },
   },
 
   cache: {

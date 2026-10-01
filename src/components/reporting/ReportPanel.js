@@ -1,7 +1,7 @@
 import React from 'react'
 import { extend } from 'lodash'
 import { observer, inject } from 'mobx-react'
-import { decorate, observable, runInAction } from 'mobx'
+import { makeObservable, observable, runInAction } from 'mobx'
 import ReactResizeDetector from 'react-resize-detector'
 import { Panel, DropdownButton, MenuItem } from 'react-bootstrap'
 import NewId from '../../utils/NewId'
@@ -16,6 +16,16 @@ class ReportPanel extends React.Component {
   isLoading = true
   chart = null
   errors = null
+
+  constructor(props) {
+    super(props)
+    makeObservable(this, {
+      chart: observable,
+      isLoading: observable,
+      size: observable,
+      errors: observable,
+    })
+  }
 
   componentDidMount() {
 
@@ -69,7 +79,7 @@ class ReportPanel extends React.Component {
         <Panel.Body>
           <h1 className="pr">{this.chart && this.chart.Name}</h1>
           {!this.errors && this.size.width > 0 && <ReportImage {...this.props} size={this.size} parentLoading={this.isLoading || this.props.isLoading} />}
-          {this.errors && this.errors.map((err) => <p>{err.Message}</p>)}
+          {this.errors && this.errors.map((err, index) => <p key={index}>{err.Message}</p>)}
           <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} refreshMode="debounce" refreshRate={500} />
         </Panel.Body>
       </Panel>
@@ -94,11 +104,5 @@ class ReportPanel extends React.Component {
   }
 }
 
-decorate(ReportPanel, {
-  chart: observable,
-  isLoading: observable,
-  size: observable,
-  errors: observable
-})
 
 export default inject("Settings")(observer(ReportPanel))

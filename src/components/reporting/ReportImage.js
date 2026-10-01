@@ -1,7 +1,7 @@
 import React from 'react'
 import { extend } from 'lodash'
 import { observer } from 'mobx-react'
-import { decorate, observable, runInAction, observe } from 'mobx'
+import { makeObservable, observable, runInAction, observe } from 'mobx'
 import Icon from 'react-fontawesome'
 import { NoItems } from '../reporting'
 import Api from '../../services/Api'
@@ -12,6 +12,15 @@ class ReportImage extends React.Component {
   isLoading = true
   chart = null
   errors = null
+
+  constructor(props) {
+    super(props)
+    makeObservable(this, {
+      chart: observable,
+      isLoading: observable,
+      errors: observable,
+    })
+  }
 
   componentDidMount() {
     setTimeout(() => {
@@ -26,7 +35,7 @@ class ReportImage extends React.Component {
       this.isLoading = true,
         this.errors = null
     })
-    var filterData = extend(this.props.filterState.Filters, {})
+    let filterData = extend(this.props.filterState.Filters, {})
     Api.ReportData(this.props.uid, Math.floor(this.props.size.width), Math.floor(this.props.height), filterData)
       .then((response) => {
         runInAction(() => {
@@ -57,7 +66,7 @@ class ReportImage extends React.Component {
           {/* <Icon name="circle-notch" size="2x" spin /> */}
           <BusySpinner style={placeholderStyle} />
         </div>}
-        {!this.isLoading && !this.props.parentLoading && this.chart && this.chart.RecordCount > 0 && <img src={"data:image/jpeg;base64," + this.chart.Image} />}
+        {!this.isLoading && !this.props.parentLoading && this.chart && this.chart.RecordCount > 0 && <img src={"data:image/jpeg;base64," + this.chart.Image} alt={this.chart.Name || "Report chart"} />}
         {!this.isLoading && !this.props.parentLoading && this.chart && this.chart.RecordCount == 0 && <div className="text-center" style={placeholderStyle}><NoItems /></div>}
         {!this.isLoading && this.errors &&
           <div>
@@ -72,10 +81,5 @@ class ReportImage extends React.Component {
   }
 }
 
-decorate(ReportImage, {
-  chart: observable,
-  isLoading: observable,
-  errors: observable
-})
 
 export default observer(ReportImage)

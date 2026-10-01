@@ -18,7 +18,7 @@ class TagsInput extends React.Component {
     if (this.cancelToken) {
       // cancel any existing request     
       try { this.cancelToken.cancel("Request no longer relevant.") }
-      catch (e) {}
+      catch (e) { /* request already cancelled */ }
     }
 
     // create new cancel token
@@ -36,8 +36,8 @@ class TagsInput extends React.Component {
   }
 
   removeTag(index) {
-    var newValues = [...this.props.field.value]
-    var removing = newValues[index]
+    let newValues = [...this.props.field.value]
+    let removing = newValues[index]
     newValues.splice(index, 1)
     this.props.field.set([...newValues])
     if (this.props.onRemoveTag) {
@@ -73,7 +73,7 @@ class TagsInput extends React.Component {
               if (this.props.onAddTag) {
                 this.props.onAddTag(field, selected[0])
               }
-              this.typeahead.getInstance().clear()
+              this.typeahead.clear()
             }
           }}
         />
@@ -91,7 +91,7 @@ class TagsInput extends React.Component {
     return this.props.field.value.map((value, index) => {
       return (
         <Label key={value[this.props.idKey]} className="tagsinput-tag" title={this.props.selectedTitleResolver ? this.props.selectedTitleResolver(value) : null}>
-          <a className="pull-right" onClick={() => this.removeTag(index)} />
+          <a className="pull-right" role="button" tabIndex="0" onClick={() => this.removeTag(index)}><span className="sr-only">Remove</span></a>
           <span className="tagsinput-tag__text">
             {this.props.selectedLabelResolver ? this.props.selectedLabelResolver(value) : value[this.props.labelKey]}
           </span>

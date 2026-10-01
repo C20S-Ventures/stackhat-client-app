@@ -41,9 +41,9 @@ class ItemKeyDataDisplay extends React.Component {
       case "List":
         return <ul className="item-data__list">{value.map((v, index) => <li key={index}>{v}</li>)}</ul>
       case "Link":
-        return <a href={`http://${value}`} target="_blank">{value}</a>
+        return <a href={`http://${value}`} target="_blank" rel="noopener noreferrer">{value}</a>
       case "Address":
-        return <a href={`https://maps.google.com/?q=${encodeURIComponent(value)}`} target="_blank">{value}</a>
+        return <a href={`https://maps.google.com/?q=${encodeURIComponent(value)}`} target="_blank" rel="noopener noreferrer">{value}</a>
       default:
         return value
     }

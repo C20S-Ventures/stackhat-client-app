@@ -1,15 +1,16 @@
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import { observer } from 'mobx-react'
 import { ControlLabel, FormGroup, FormControl, ButtonGroup, Button } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 import Dropzone from 'react-dropzone'
 import FieldRequiredIndicator from './FieldRequiredIndicator'
-import Api from '../../services/Api';
+import Api from '../../services/Api'
 
-const uploadClassName = "evidence-field__upload"
-const uploadClassNameDragOver = "evidence-field__upload--dragover"
+const uploadClassName = 'evidence-field__upload'
+const uploadClassNameDragOver = 'evidence-field__upload--dragover'
 
-class Evidence extends React.Component {
+class Evidence extends Component {
 
   state = {
     type: "text",
@@ -93,6 +94,17 @@ class Evidence extends React.Component {
       <span className="validation-error">{field.error}</span>
     </FormGroup>
   }
+}
+
+Evidence.propTypes = {
+  field: PropTypes.shape({
+    label: PropTypes.string,
+    value: PropTypes.string,
+    error: PropTypes.string,
+    extra: PropTypes.object,
+    set: PropTypes.func.isRequired,
+    bind: PropTypes.func.isRequired,
+  }).isRequired,
 }
 
 export default observer(Evidence)

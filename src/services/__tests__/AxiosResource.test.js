@@ -155,11 +155,21 @@ describe('AxiosResource', () => {
   })
 
   describe('list', () => {
-    it('handles paginated response with Items property', async () => {
-      const mockResponse = { Items: [{ id: 1 }, { id: 2 }], Total: 10 }
-      Axios.get.mockResolvedValueOnce({ data: mockResponse })
+    it('requests the list using the paginated response transform', async () => {
+      Axios.get.mockResolvedValueOnce({ data: [] })
 
-      const result = await resource.list(null, { page: 1 })
+      await resource.list(null, { page: 1 })
+
+      expect(Axios.get).toHaveBeenCalledWith('/api/items', expect.objectContaining({
+        params: { tenant: 'test', page: 1 },
+        transformResponse: resource.transformResponseList,
+      }))
+    })
+
+    it('unwraps paginated response with Items property', () => {
+      const raw = JSON.stringify({ Items: [{ id: 1 }, { id: 2 }], Total: 10 })
+
+      const result = resource.transformResponseList(raw)
 
       expect(result).toHaveLength(2)
       expect(result.$_total).toBe(10)

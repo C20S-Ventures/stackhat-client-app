@@ -7,14 +7,15 @@ import { Input } from '../../components/forms'
 
 class Password extends React.Component {
 
-  componentWillMount() {
+  constructor(props) {
+    super(props)
     let changePasswordForm = new ChangePasswordForm(this.props.AppUserStore)
     this.changePasswordForm = new MobxReactForm(changePasswordForm.fieldInfo, changePasswordForm.formInfo)
   }
 
   render() {
 
-    var cpf = this.changePasswordForm
+    let cpf = this.changePasswordForm
 
     return (
 
@@ -39,7 +40,7 @@ class Password extends React.Component {
   }
 
   renderField(form, fieldName) {
-    var field = form.$(fieldName)
+    let field = form.$(fieldName)
     return (<Input key={field.name} field={field} />)
   }
 }

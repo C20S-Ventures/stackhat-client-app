@@ -40,18 +40,20 @@ class Api {
       login(type, credentials) {
         let config = { crossDomain: true, headers: { 'content-type': 'application/x-www-form-urlencoded' } }
         switch (type) {
-          case "password":
+          case "password": {
             // Properly encode credentials to handle special characters
             const params = new URLSearchParams()
             params.append('grant_type', 'password')
             params.append('username', credentials.userName)
             params.append('password', credentials.password)
             return Axios.post(`${serviceBase}token`, params.toString(), config)
-          case "id_token":
+          }
+          case "id_token": {
             const tokenParams = new URLSearchParams()
             tokenParams.append('grant_type', 'id_token')
             tokenParams.append('id_token', credentials.id_token)
             return Axios.post(`${serviceBase}token`, tokenParams.toString(), config)
+          }
           default:
             return Promise.reject(new Error('Invalid authentication type'))
         }

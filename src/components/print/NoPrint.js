@@ -1,7 +1,15 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 
-export default (props) => (
-  <span className="nopr">
-    {...props.children}
-  </span>
-)
+function NoPrint({ children }) {
+  return <span className="nopr">{children}</span>
+}
+
+NoPrint.propTypes = {
+  children: PropTypes.node,
+}
+
+NoPrint.defaultProps = {
+  children: undefined,
+}
+
+export default NoPrint

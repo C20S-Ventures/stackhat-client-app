@@ -20,7 +20,7 @@ class ImagePreference extends React.Component {
     let { props } = this    
     let value = props.Settings[props.type][props.settingKey]
     if (value) {
-      var parts = value.split("/")
+      let parts = value.split("/")
       this.setState({ upload: { FileName: parts[0], Name: parts[1] } })
     }
   }

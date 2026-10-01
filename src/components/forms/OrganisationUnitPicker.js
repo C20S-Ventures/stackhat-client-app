@@ -13,7 +13,7 @@ class OrganisationUnitPicker extends React.Component {
   }
 
   handleSearch = (query) => {
-    this.state.isLoading = true
+    this.setState({ isLoading: true })
     Api.OrganisationUnits.query({}, { api_limit: 10, api_search_Name: query })
       .then((response) => {
         this.setState({
@@ -45,11 +45,11 @@ class OrganisationUnitPicker extends React.Component {
           onChange={(selected) => {
             if (selected && selected.length > 0) {
               field.value = selected[0]
-              this.typeahead.getInstance().clear()
+              this.typeahead.clear()
             }
           }}
           onBlur={(e) => {
-            this.typeahead.getInstance().clear()
+            this.typeahead.clear()
           }}
         />}
         {field.value && this.renderSelected(field)}
@@ -63,7 +63,7 @@ class OrganisationUnitPicker extends React.Component {
     return (
       <div className="tagsinput__tags">
         <Label className="tagsinput-tag" title={field.value.Name}>
-          <a className="pull-right" onClick={() => field.clear()} />
+          <a className="pull-right" role="button" tabIndex="0" onClick={() => field.clear()}><span className="sr-only">Remove</span></a>
           <span className="tagsinput-tag__text">
             {field.value.Name}
           </span>

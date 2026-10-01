@@ -2,6 +2,7 @@ import React from 'react'
 import { observer } from 'mobx-react'
 import { sortBy } from 'lodash'
 import { InlineTagsInput } from '.'
+import FormatForCode from '../formatting/FormatForCode'
 
 class InlineMultiOrganisationUnitPicker extends React.Component {
 

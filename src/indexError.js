@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Panel } from 'react-bootstrap'
 import LoginLogo from './areas/public/LoginLogo'
 
@@ -9,7 +9,7 @@ import './Print.scss'
 document.body.className = "public"
 
 // render
-render((
+createRoot(document.getElementById('root')).render((
   <div className="master" >
     <div className="main container-fluid">
       <div className="text-center">
@@ -29,5 +29,5 @@ render((
       </div>
     </div>
   </div>
-), document.getElementById('root'));
+))
 

@@ -4,7 +4,7 @@ import dvr from 'mobx-react-form/lib/validators/DVR'
 
 const DetailsForm = {
 
-  plugins: { dvr: dvr(ValidatorJS) },
+  plugins: { dvr: dvr({ package: ValidatorJS }) },
   fields: [
     "FirstName",
     "LastName",

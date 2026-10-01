@@ -9,36 +9,8 @@ import Api from '../../services/Api'
 
 class Details extends React.Component {
 
-  componentWillMount() {
-    Api.AppUsers.get(this.props.Authentication.Principal.userId)
-      .then((response) => {
-        let item = response
-        for (let prop in response) {
-          if (item.hasOwnProperty(prop)) {
-            if (this.detailsForm.has(prop) && item[prop] != null) {
-              this.detailsForm.$(prop).value = item[prop]
-            }
-          }
-        }
-      })
-
-    Api.UserClassifications.query({}, { UserID: this.props.Authentication.Principal.userId })
-      .then((response) => {
-        let tags = []
-        _.each(response, (tag) => {
-          tags.push(tag.Classification)
-        })
-        this.detailsForm.$("Classification").value = tags
-      })
-
-    Api.UserTags.query({}, { UserID: this.props.Authentication.Principal.userId })
-      .then((response) => {
-        let tags = []
-        _.each(response, (tag) => {
-          tags.push(tag.Tag)
-        })
-        this.detailsForm.$("Tag").value = tags
-      })
+  constructor(props) {
+    super(props)
 
     const textFieldHandlers = {
       onChange: (field) => (e) => {
@@ -63,6 +35,30 @@ class Details extends React.Component {
     this.detailsForm = new MobxReactForm(DetailsForm, { plugins: DetailsForm.plugins })
   }
 
+  componentDidMount() {
+    Api.AppUsers.get(this.props.Authentication.Principal.userId)
+      .then((response) => {
+        let item = response
+        for (let prop in response) {
+          if (Object.prototype.hasOwnProperty.call(item, prop)) {
+            if (this.detailsForm.has(prop) && item[prop] != null) {
+              this.detailsForm.$(prop).value = item[prop]
+            }
+          }
+        }
+      })
+
+    Api.UserClassifications.query({}, { UserID: this.props.Authentication.Principal.userId })
+      .then((response) => {
+        this.detailsForm.$("Classification").value = response.map((tag) => tag.Classification)
+      })
+
+    Api.UserTags.query({}, { UserID: this.props.Authentication.Principal.userId })
+      .then((response) => {
+        this.detailsForm.$("Tag").value = response.map((tag) => tag.Tag)
+      })
+  }
+
   debouncedSave = debounce((field) => {
     this.save(field)
   }, 300)
@@ -71,7 +67,7 @@ class Details extends React.Component {
   }
 
   handleAddTag = (field, tag) => {
-    var store = this.props[`User${field.name}Store`]
+    let store = this.props[`User${field.name}Store`]
     store.Add({
       [`${field.name}ID`]: tag[`${field.extra.idKey}`],
       UserID: this.props.Authentication.Principal.userId
@@ -101,7 +97,7 @@ class Details extends React.Component {
 
   render() {
 
-    var df = this.detailsForm
+    let df = this.detailsForm
 
     return (
 
@@ -151,7 +147,7 @@ class Details extends React.Component {
   }
 
   renderField(form, fieldName) {
-    var field = form.$(fieldName)
+    let field = form.$(fieldName)
 
     switch (field.type) {
       case "datepicker":

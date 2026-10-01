@@ -1,15 +1,16 @@
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import Icon from 'react-fontawesome'
 import { observer } from 'mobx-react'
 import MobxReactForm from 'mobx-react-form'
 import ItemCreatorFields from './ItemCreatorFields'
-import { BusySpinner } from '../modals';
+import { BusySpinner } from '../modals'
 
-class ItemCreator extends React.Component {
+class ItemCreator extends Component {
 
-  componentWillMount() {
+  componentDidMount() {
     let propForm = this.props.form
     this.form = new MobxReactForm(propForm.fieldInfo, propForm.formInfo)
   }
@@ -67,6 +68,24 @@ class ItemCreator extends React.Component {
     </form>)
   }
 
+}
+
+ItemCreator.propTypes = {
+  form: PropTypes.shape({
+    fieldInfo: PropTypes.object.isRequired,
+    formInfo: PropTypes.object.isRequired,
+  }).isRequired,
+  typeTitle: PropTypes.string,
+  submitText: PropTypes.string,
+  secondarySubmitText: PropTypes.string,
+  isFrameless: PropTypes.bool,
+  isBusy: PropTypes.bool,
+  busyMessage: PropTypes.string,
+}
+
+ItemCreator.defaultProps = {
+  isFrameless: false,
+  isBusy: false,
 }
 
 export default observer(ItemCreator)

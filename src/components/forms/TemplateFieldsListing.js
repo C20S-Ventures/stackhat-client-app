@@ -7,7 +7,7 @@ import { Input, DatePicker, Number, TextArea } from './'
 class TemplateFields extends React.Component {
 
   render() {
-    var field = this.props.field
+    let field = this.props.field
 
     return (
       <div>
@@ -18,9 +18,9 @@ class TemplateFields extends React.Component {
   }
 
   renderTemplateFields(field) {
-    var option = find(field.extra.options, { [field.extra.value ? field.extra.value : field.name]: (field.value - 0) })
+    let option = find(field.extra.options, { [field.extra.value ? field.extra.value : field.name]: (field.value - 0) })
     if (option) {
-      return (<div><label>Fields</label><ul>{sortBy(filter(option[field.extra.fields], { IsSelected: true }), (f) => f.DisplayOrder).map((templateField, index) => {
+      return (<div><p><strong>Fields</strong></p><ul>{sortBy(filter(option[field.extra.fields], { IsSelected: true }), (f) => f.DisplayOrder).map((templateField, index) => {
         let createField = (data) => this.props.form.$("Fields").add(data)
         let data = { label: templateField.Title, rules: "required" }
 
